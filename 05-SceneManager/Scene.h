@@ -1,4 +1,7 @@
 
+#pragma once
+#include <d3dx10.h>
+
 #include "KeyEventHandler.h"
 
 #define	INTROSCENE	0
@@ -33,9 +36,13 @@ public:
 		this->key_handler = NULL;
 	}
 	bool isUnLoaded = false;
+
 	int GetId() { return id; }
 	void SetCamerAutoMove(bool l) { this->isCameraAutoMove = l; }
+
 	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }
+	int GetId() { return id; }
+	void SetCamerAutoMove(bool l) { this->isCameraAutoMove = l; }
 	virtual void Load() = 0;
 	virtual void Unload() = 0;
 	virtual void Update(DWORD dt) = 0;
@@ -56,4 +63,3 @@ public:
 	CSceneKeyHandler(LPSCENE s) :CKeyEventHandler() { scence = s; }
 };
 
-typedef CSceneKeyHandler* LPSCENEKEYHANDLER;

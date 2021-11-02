@@ -19,14 +19,11 @@ protected:
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
-
+	void _ParseSection_ANIMATION_SETS(string line);
 	void _ParseSection_OBJECTS(string line);
 
 	void LoadObjects(LPCWSTR assetFile);
 	
-	CMap* current_map = NULL;
-	//Camera
-	Camera* cam;
 public: 
 	bool isGameDone1 = false;
 	bool isGameDone2 = false;
@@ -39,8 +36,6 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
-
-	CMap* GetMap() { return current_map; }
 
 	void Clear();
 	void PurgeDeletedObjects();

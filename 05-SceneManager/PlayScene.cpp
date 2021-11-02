@@ -8,7 +8,6 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
-#include "Platform.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -79,7 +78,28 @@ void CPlayScene::_ParseSection_ANIMATIONS(string line)
 
 	CAnimations::GetInstance()->Add(ani_id, ani);
 }
+void CPlayScene::_ParseSection_ANIMATION_SETS(string line)
+{
+	vector<string> tokens = split(line);
 
+	if (tokens.size() < 2) return; // skip invalid lines - an animation set must at least id and one animation id
+	int ani_set_id = atoi(tokens[0].c_str());
+	LPANIMATION_SET s;
+	if (CAnimationSets::GetInstance()->animation_sets[ani_set_id] != NULL)
+		s = CAnimationSets::GetInstance()->animation_sets[ani_set_id];
+	else
+		s = new CAnimationSet();
+	CAnimations* animations = CAnimations::GetInstance();
+
+	for (unsigned int i = 1; i < tokens.size(); i++)
+	{
+		int ani_id = atoi(tokens[i].c_str());
+
+		LPANIMATION ani = animations->Get(ani_id);
+		s->push_back(ani);
+	}
+	CAnimationSets::GetInstance()->Add(ani_set_id, s);
+}
 /*
 	Parse a line in section [OBJECTS]
 */
@@ -133,6 +153,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 				option_tag_3 = (int)atof(tokens[7].c_str());
 		}
 
+		CAnimationSets* animation_sets = CAnimationSets::GetInstance();
 
 		CGameObject* obj = NULL;
 
@@ -318,9 +339,9 @@ void CPlayScene::Load()
 		if (line == "[ANIMATIONS]") {
 			section = SCENE_SECTION_ANIMATIONS; continue;
 		}
-		/*	if (line == "[ANIMATION_SETS]") {
-				section = SCENE_SECTION_ANIMATION_SETS; continue;
-			}*/
+		if (line == "[ANIMATION_SETS]") {
+			section = SCENE_SECTION_ANIMATION_SETS; continue;
+		}
 		if (line == "[OBJECTS]") {
 			section = SCENE_SECTION_OBJECTS; continue;
 		}
@@ -333,7 +354,7 @@ void CPlayScene::Load()
 		{
 		case SCENE_SECTION_SPRITES: _ParseSection_SPRITES(line); break;
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
-			//case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
+		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 			//case SCENE_SECTION_TILEMAP_DATA: _ParseSection_TILEMAP_DATA(line); break;
 		}
