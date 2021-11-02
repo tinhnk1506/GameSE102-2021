@@ -24,7 +24,6 @@ protected:
 
 	void LoadObjects(LPCWSTR assetFile);
 	
-	//Camera
 public: 
 	bool isGameDone1 = false;
 	bool isGameDone2 = false;
@@ -37,7 +36,6 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
-
 
 	void Clear();
 	void PurgeDeletedObjects();

@@ -1,7 +1,9 @@
+
 #pragma once
 #include <d3dx10.h>
 
 #include "KeyEventHandler.h"
+
 #define	INTROSCENE	0
 #define	WORLDSCENE	1
 #define	PLAYSCENE	2
@@ -34,9 +36,11 @@ public:
 		this->key_handler = NULL;
 	}
 	bool isUnLoaded = false;
-	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }
+
 	int GetId() { return id; }
 	void SetCamerAutoMove(bool l) { this->isCameraAutoMove = l; }
+
+	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }
 	virtual void Load() = 0;
 	virtual void Unload() = 0;
 	virtual void Update(DWORD dt) = 0;
