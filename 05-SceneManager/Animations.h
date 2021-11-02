@@ -1,9 +1,9 @@
 #pragma once
 
 #include <Windows.h>
-#include "Sprite.h"
 #include <Windows.h>
 #include <unordered_map>
+#include "Sprites.h"
 
 using namespace std;
 /*
