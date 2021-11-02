@@ -146,20 +146,18 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			}
 			obj = new CMario(x, y);
 			player = (CMario*)obj;
-			DebugOut(L"[INFO] Player object created!\n");
+			DebugOut(L"[INFO] Player object created!\n", obj);
 			break;
 		case OBJECT_TYPE_GOOMBA:
 			/*obj = new CGoomba(tag);
 			obj->SetTag(tag);
 			obj->SetType(MOVING);*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_BRICK:
 			obj = new CBrick();
 			//obj->SetTag(tag);
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -172,13 +170,11 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			//		((CQuestionBrick*)obj)->items = nboitem;
 			//}
 			//((CQuestionBrick*)obj)->start_y = y;
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_BREAKABLEBRICK:
 			//obj = new CBreakableBrick();
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -188,7 +184,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 				if (tag == 96)
 					obj->isEnable = false;
 				((CMusicalBrick*)obj)->start_y = y;*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -199,7 +194,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			obj->SetType(MOVING);
 			((CKoopas*)obj)->start_x = x;
 			((CKoopas*)obj)->start_y = y;*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -207,19 +201,16 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			/*obj = new CBoomerangBrother();
 			obj->SetType(MOVING);
 			((CBoomerangBrother*)obj)->start_x = x;*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_BLOCK:
 			//obj = new CBlock();
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_ABYSS:
 			//obj = new CAbyss();
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -227,7 +218,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			/*		obj = new CPlant();
 					((CPlant*)obj)->SetLimitY(y);
 					obj->SetType(MOVING);*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -235,20 +225,17 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			/*	obj = new CFirePlant(tag);
 				((CFirePlant*)obj)->SetLimitY(y);
 				obj->SetType(MOVING);*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);
 				obj->SetType(IGNORE_DEFINE);*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_CARD:
 			//obj = new CCard();
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -266,7 +253,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 				else
 					((CPortal*)obj)->pipeUp = false;
 				obj->SetTag(isToExtraScene);*/
-			DebugOut(L"[INFO] Player object created!\n");
 			obj = new CBrick();
 
 			break;
@@ -276,7 +262,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			/*int gridCols = atoi(tokens[1].c_str());
 			int gridRows = atoi(tokens[2].c_str());
 			grid = new Grid(gridCols, gridRows);*/
-			DebugOut(L"\nParseSection_GRID: Done\n");
 			obj = new CBrick();
 
 			break;
@@ -288,8 +273,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		if (object_type != GRID)
 		{
 			// General object setup
-			DebugOut(L"[ERR] Invalid object type: %d , %f , %f:::\n", object_type, x, y);
-
 			obj->SetPosition(x, y);
 			objects.push_back(obj);
 			/*	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);

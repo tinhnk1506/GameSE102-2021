@@ -24,7 +24,11 @@ protected:
 
 	void LoadObjects(LPCWSTR assetFile);
 	
+	//Camera
 public: 
+	bool isGameDone1 = false;
+	bool isGameDone2 = false;
+	bool isGameDone3 = false;
 	CPlayScene(int id, LPCWSTR filePath);
 
 	virtual void Load();
@@ -33,6 +37,7 @@ public:
 	virtual void Unload();
 
 	LPGAMEOBJECT GetPlayer() { return player; }
+
 
 	void Clear();
 	void PurgeDeletedObjects();

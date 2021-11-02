@@ -313,7 +313,7 @@ LPTEXTURE CGame::LoadTexture(LPCWSTR texturePath)
 
 	pD3DDevice->CreateShaderResourceView(tex, &SRVDesc, &gSpriteTextureRV);
 
-	DebugOut(L"[INFO] Texture loaded Ok from file: %s \n", texturePath);
+	//DebugOut(L"[INFO] Texture loaded Ok from file: %s \n", texturePath);
 
 	return new CTexture(tex, gSpriteTextureRV);
 }
