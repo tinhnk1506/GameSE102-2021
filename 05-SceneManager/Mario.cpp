@@ -221,27 +221,25 @@ int CMario::GetAniIdBig()
 
 	//if (aniId == -1) aniId = ID_ANI_MARIO_IDLE_RIGHT;
 
-	return MARIO_ANI_SMALL_IDLE_RIGHT;
+	return MARIO_ANI_BIG_IDLE_RIGHT;
 }
 
 void CMario::Render()
 {
-	CAnimations* animations = CAnimations::GetInstance();
 	int aniId = -1;
 
 	if (state == MARIO_STATE_DIE)
-		aniId = MARIO_ANI_SMALL_IDLE_RIGHT;
+		aniId = MARIO_ANI_DIE;
 	else if (level == MARIO_LEVEL_BIG)
 		aniId = GetAniIdBig();
 
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
 
-	animations->Get(aniId)->Render(x, y);
-
+	animation_set->at(aniId)->Render(x, y);
 	//RenderBoundingBox();
 
-	DebugOutTitle(L"Coins: %d", coin);
+	//DebugOutTitle(L"Coins: %d", coin);
 }
 
 void CMario::SetState(int state)

@@ -29,6 +29,8 @@ protected:
 
 	bool isDeleted; 
 
+	LPANIMATION_SET animation_set;
+
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
@@ -44,7 +46,7 @@ public:
 	CGameObject();
 	CGameObject(float x, float y) :CGameObject() { this->x = x; this->y = y; }
 
-
+	void SetAnimationSet(LPANIMATION_SET ani_set) { animation_set = ani_set; }
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL) {};
 	virtual void Render() = 0;

@@ -296,8 +296,8 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			// General object setup
 			obj->SetPosition(x, y);
 			objects.push_back(obj);
-			/*	LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
-				obj->SetAnimationSet(ani_set);*/
+			LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+			obj->SetAnimationSet(ani_set);
 		}
 		// Insert objects to grid from file
 		//if (object_type != OBJECT_TYPE_MARIO && object_type != GRID)
@@ -394,7 +394,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, cy /*cy*/);
 
 	PurgeDeletedObjects();
 }
