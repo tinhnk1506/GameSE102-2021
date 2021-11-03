@@ -43,7 +43,6 @@ void CPlayScene::_ParseSection_TILEMAP_DATA(string line)
 	ifstream f;
 	f.open(path);
 	f >> ID >> rowMap >> columnMap >> rowTile >> columnTile >> totalTiles;
-	DebugOut(L"[INFO] _ParseSection_TILEMAP %d, %d \n", ID, rowMap);
 	//Init Map Matrix
 	int** TileMapData = new int* [rowMap];
 	for (int i = 0; i < rowMap; i++)
@@ -52,7 +51,7 @@ void CPlayScene::_ParseSection_TILEMAP_DATA(string line)
 		int j;
 		for (j = 0; j < columnMap; j++) {
 			f >> TileMapData[i][j];
-			DebugOut(L"[INFO] _ParseSection_TILEMAP %d \n", TileMapData[i][j]);
+			//DebugOut(L"[INFO] _ParseSection_TILEMAP %d \n", TileMapData[i][j]);
 		}
 	}
 	f.close();
@@ -423,7 +422,8 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, cy /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, ceil(cy - 60.0f) /*cy*/);
+	current_map->SetCamPos(cx, cy);
 
 	PurgeDeletedObjects();
 }
@@ -431,7 +431,6 @@ void CPlayScene::Update(DWORD dt)
 void CPlayScene::Render()
 {
 	current_map->DrawMap();
-
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }

@@ -22,14 +22,19 @@ CMap::~CMap()
 
 void CMap::DrawMap() {
 	CGame* game = CGame::GetInstance();
-	int firstColumn = floor(CamX / TILE_WIDTH);
-	int lastColumn = ceil((CamX + (game->GetBackBufferWidth())) / TILE_WIDTH);
-	for (int currentRow = 0; currentRow < TotalRowsOfMap; currentRow++) {
-		for (int currentColumn = firstColumn; currentColumn < TotalColumnsOfMap; currentColumn++) {
-			int spriteMapIndex = TileMap[currentRow][currentColumn] - 1;
-			Tiles.at(spriteMapIndex)->Draw(currentColumn * TILE_WIDTH, currentRow * TILE_HEIGHT);
+	int FirstColumn = (int)floor(CamX / TILE_WIDTH);
+	int LastColumn = (int)ceil((CamX + game->GetBackBufferWidth()) / TILE_WIDTH);
+	if (LastColumn >= TotalColumnsOfMap)
+		LastColumn = TotalColumnsOfMap - 1;
+
+	int d = 0;
+	for (int CurrentRow = 0; CurrentRow < TotalRowsOfMap; CurrentRow++)
+		for (int CurrentColumn = FirstColumn; CurrentColumn <= LastColumn; CurrentColumn++)
+		{
+			int index = TileMap[CurrentRow][CurrentColumn] - 1;
+			if (index < TotalTiles)
+				Tiles.at(index)->Draw((float)(CurrentColumn * TILE_WIDTH), (float)(CurrentRow * TILE_HEIGHT));
 		}
-	}
 }
 
 void CMap::SetTileMapData(int** TileMapData) {
@@ -40,11 +45,10 @@ void CMap::ExtractTileFromTileSet() {
 	for (int TileNum = 0; TileNum < TotalTiles; TileNum++) {
 		int left = TileNum % TotalColumnsOfTileSet * TILE_WIDTH;
 		int top = TileNum / TotalColumnsOfTileSet * TILE_HEIGHT;
-		int right = left + TILE_WIDTH;
-		int bottom = top + TILE_HEIGHT;
-		DebugOut(L"[DETAILS]	left %d top %d right %d bottom %d\n", left, top, right, bottom);
+		int right = left + TILE_WIDTH - 1;
+		int bottom = top + TILE_HEIGHT - 1;
 		LPSPRITE NewTile = new CSprite(TileNum + 5000, left, top, right, bottom, TileSet);
-		Tiles.push_back(NewTile);
+		this->Tiles.push_back(NewTile);
 	}
 }
 

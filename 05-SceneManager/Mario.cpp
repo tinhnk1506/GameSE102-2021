@@ -14,6 +14,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
+	DebugOut(L"[INFO] CMario::Update  %f ::\n", vx);
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
@@ -252,7 +253,7 @@ void CMario::SetState(int state)
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
 		//maxVx = MARIO_WALKING_SPEED;
-		ax = MARIO_ACCELERATION;
+		ax = -MARIO_ACCELERATION;
 		nx = 1;
 		break;
 	case MARIO_STATE_WALKING_LEFT:
@@ -263,37 +264,10 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_JUMPING:
 		if (isSitting) break;
-		/*if (isOnPlatform)
-		{
-			if (abs(this->vx) == MARIO_RUNNING_SPEED)
-				vy = -MARIO_JUMP_RUN_SPEED_Y;
-			else
-				vy = -MARIO_JUMP_SPEED_Y;
-		}*/
+
 		break;
 
-		/*case MARIO_STATE_RELEASE_JUMP:
-			if (vy < 0) vy += MARIO_JUMP_SPEED_Y / 2;
-			break;*/
-
-			/*case MARIO_STATE_SITTING:
-				if (isOnPlatform && level != MARIO_LEVEL_SMALL)
-				{
-					state = MARIO_STATE_IDLE;
-					isSitting = true;
-					vx = 0; vy = 0.0f;
-					y += MARIO_SIT_HEIGHT_ADJUST;
-				}
-				break;
-
-			case MARIO_STATE_SIT_RELEASE:
-				if (isSitting)
-				{
-					isSitting = false;
-					state = MARIO_STATE_IDLE;
-					y -= MARIO_SIT_HEIGHT_ADJUST;
-				}
-				break;*/
+		
 
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
