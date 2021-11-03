@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Block.h"
+#include "QuestionBrick.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -198,13 +199,13 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			player = (CMario*)obj;
 			DebugOut(L"[INFO] Player object created!\n", obj);
 			break;
-		case OBJECT_TYPE_GOOMBA:
-			/*obj = new CGoomba(tag);
-			obj->SetTag(tag);
-			obj->SetType(MOVING);*/
-			obj = new CBrick();
+		//case OBJECT_TYPE_GOOMBA:
+		//	/*obj = new CGoomba(tag);
+		//	obj->SetTag(tag);
+		//	obj->SetType(MOVING);*/
+		//	obj = new CBrick();
 
-			break;
+		//	break;
 		case OBJECT_TYPE_BRICK:
 			obj = new CBrick();
 			//obj->SetTag(tag);
@@ -219,8 +220,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			//		((CQuestionBrick*)obj)->items = nboitem;
 			//}
 			//((CQuestionBrick*)obj)->start_y = y;
-			obj = new CBrick();
-
+			obj = new QuestionBrick(option_tag_1, option_tag_2);
 			break;
 		case OBJECT_TYPE_BREAKABLEBRICK:
 			//obj = new CBreakableBrick();

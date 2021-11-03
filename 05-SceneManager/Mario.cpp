@@ -10,6 +10,7 @@
 
 #include "Collision.h"
 #include "Block.h"
+#include "QuestionBrick.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -55,6 +56,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<QuestionBrick*>(e->obj))
+		OnCollisionWithQuestionBrick(e);
 }
 
 void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
@@ -66,7 +69,7 @@ void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
 		GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (e->nx != 0 && ceil(mBottom) != oTop)
-		{	
+		{
 			//x = x0 + dx;
 			//y = 0;
 		}
@@ -127,6 +130,17 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
+{
+	QuestionBrick* qBrick = dynamic_cast<QuestionBrick*>(e->obj);
+
+	// Hit from bottom
+	if (e->ny > 0) {
+		vy = 0;
+		qBrick->SetState(QUESTION_BRICK_HIT);
+	}
 }
 
 int CMario::GetAniIdSmall()
