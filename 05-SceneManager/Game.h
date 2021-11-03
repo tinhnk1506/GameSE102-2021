@@ -9,15 +9,13 @@ using namespace std;
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 
-#include "Texture.h"
+#include "Textures.h"
 #include "KeyEventHandler.h"
 #include "Scene.h"
 
-#define MAX_FRAME_RATE 100
+#define MAX_FRAME_RATE 120
 #define KEYBOARD_BUFFER_SIZE 1024
 #define KEYBOARD_STATE_SIZE 256
-
-
 
 /*
 	Our simple game framework

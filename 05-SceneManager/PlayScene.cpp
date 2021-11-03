@@ -35,6 +35,34 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 
 #define MAX_SCENE_LINE					1024
 
+void CPlayScene::_ParseSection_TILEMAP_DATA(string line)
+{
+
+	int ID, rowMap, columnMap, columnTile, rowTile, totalTiles;
+	LPCWSTR path = ToLPCWSTR(line);
+	ifstream f;
+	f.open(path);
+	f >> ID >> rowMap >> columnMap >> rowTile >> columnTile >> totalTiles;
+	//Init Map Matrix
+	int** TileMapData = new int* [rowMap];
+	for (int i = 0; i < rowMap; i++)
+	{
+		TileMapData[i] = new int[columnMap];
+		int j;
+		for (j = 0; j < columnMap; j++) {
+			f >> TileMapData[i][j];
+			//DebugOut(L"[INFO] _ParseSection_TILEMAP %d \n", TileMapData[i][j]);
+		}
+	}
+	f.close();
+
+	current_map = new CMap(ID, rowMap, columnMap, rowTile, columnTile, totalTiles);
+	current_map->ExtractTileFromTileSet();
+	current_map->SetTileMapData(TileMapData);
+	//mapWidth = current_map->GetMapWidth();
+	DebugOut(L"[INFO] _ParseSection_TILEMAP_DATA done:: \n");
+
+}
 void CPlayScene::_ParseSection_SPRITES(string line)
 {
 	vector<string> tokens = split(line);
@@ -333,9 +361,9 @@ void CPlayScene::Load()
 		if (line == "[SPRITES]") {
 			section = SCENE_SECTION_SPRITES; continue;
 		}
-		/*if (line == "[TILEMAP DATA]") {
+		if (line == "[TILEMAP DATA]") {
 			section = SCENE_SECTION_TILEMAP_DATA; continue;
-		}*/
+		}
 		if (line == "[ANIMATIONS]") {
 			section = SCENE_SECTION_ANIMATIONS; continue;
 		}
@@ -356,7 +384,7 @@ void CPlayScene::Load()
 		case SCENE_SECTION_ANIMATIONS: _ParseSection_ANIMATIONS(line); break;
 		case SCENE_SECTION_ANIMATION_SETS: _ParseSection_ANIMATION_SETS(line); break;
 		case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
-			//case SCENE_SECTION_TILEMAP_DATA: _ParseSection_TILEMAP_DATA(line); break;
+		case SCENE_SECTION_TILEMAP_DATA: _ParseSection_TILEMAP_DATA(line); break;
 		}
 	}
 
@@ -394,13 +422,15 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, cy /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, ceil(cy - 60.0f) /*cy*/);
+	current_map->SetCamPos(cx, cy);
 
 	PurgeDeletedObjects();
 }
 
 void CPlayScene::Render()
 {
+	current_map->DrawMap();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
 }

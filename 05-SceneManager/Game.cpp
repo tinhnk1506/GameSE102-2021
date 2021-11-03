@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "Utils.h"
 
-#include "Texture.h"
+#include "Textures.h"
 #include "Animations.h"
 #include "PlayScene.h"
 

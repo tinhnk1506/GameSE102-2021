@@ -3,8 +3,8 @@
 #include <unordered_map>
 
 #include <d3dx10.h>
+#include "Textures.h"
 
-#include "Texture.h"
 
 using namespace std;
 
