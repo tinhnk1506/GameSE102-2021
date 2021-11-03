@@ -415,6 +415,7 @@ void CPlayScene::Update(DWORD dt)
 	// Update camera to follow mario
 	float cx, cy;
 	player->GetPosition(cx, cy);
+	//player->Update(dt, &coObjects);
 
 	CGame* game = CGame::GetInstance();
 	cx -= game->GetBackBufferWidth() / 2;
@@ -430,6 +431,7 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
+	player->Render();
 	current_map->DrawMap();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
