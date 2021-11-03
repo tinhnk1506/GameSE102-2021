@@ -274,7 +274,7 @@
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 16
 
-#define MARIO_BBOX_SIT_HEIGHT	18
+#define MARIO_BBOX_SIT_HEIGHT	0
 
 #endif // !MARIO_BBOX
 
@@ -323,6 +323,7 @@ class CMario : public CGameObject
 
 	int coin;
 
+	void OnCollisionWithBlock(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);

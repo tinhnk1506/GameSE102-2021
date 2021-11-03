@@ -8,6 +8,7 @@
 #include "Sprites.h"
 #include "Portal.h"
 #include "Coin.h"
+#include "Block.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -207,7 +208,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		case OBJECT_TYPE_BRICK:
 			obj = new CBrick();
 			//obj->SetTag(tag);
-			obj = new CBrick();
 
 			break;
 		case OBJECT_TYPE_QUESTIONBRICK:
@@ -254,8 +254,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 
 			break;
 		case OBJECT_TYPE_BLOCK:
-			//obj = new CBlock();
-			obj = new CBrick();
+			obj = new CBlock();
 
 			break;
 		case OBJECT_TYPE_ABYSS:
@@ -460,10 +459,10 @@ void CPlayScene::SetCam(float cx, float cy, DWORD dt) {
 }
 void CPlayScene::Render()
 {
-	player->Render();
 	current_map->DrawMap();
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+	player->Render();
 }
 
 /*
