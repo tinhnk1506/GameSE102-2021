@@ -7,6 +7,8 @@
 #define TILE_WIDTH 16
 #define TILE_HEIGHT 16
 
+#define TILE_DIFF 1
+
 class CMap
 {
 	int TotalRowsOfMap, TotalColumnsOfMap;
