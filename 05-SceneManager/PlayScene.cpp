@@ -397,6 +397,9 @@ void CPlayScene::Update(DWORD dt)
 {
 	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
 	// TO-DO: This is a "dirty" way, need a more organized way 
+	CGame* game = CGame::GetInstance();
+	float cam_x, cam_y;
+	game->GetCamPos(cam_x, cam_y);
 
 	vector<LPGAMEOBJECT> coObjects;
 	for (size_t i = 1; i < objects.size(); i++)
@@ -404,31 +407,57 @@ void CPlayScene::Update(DWORD dt)
 		coObjects.push_back(objects[i]);
 	}
 
+	player->Update(dt, &coObjects);
+
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
 
-	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return;
-
 	// Update camera to follow mario
 	float cx, cy;
 	player->GetPosition(cx, cy);
-	//player->Update(dt, &coObjects);
-
-	CGame* game = CGame::GetInstance();
-	cx -= game->GetBackBufferWidth() / 2;
-	cy -= game->GetBackBufferHeight() / 2;
-
-	if (cx < 0) cx = 0;
-
-	CGame::GetInstance()->SetCamPos(cx, ceil(cy - 60.0f) /*cy*/);
-	current_map->SetCamPos(cx, cy);
-
+	SetCam(cx, cy, dt);
 	PurgeDeletedObjects();
 }
+void CPlayScene::SetCam(float cx, float cy, DWORD dt) {
+	float sw, sh, mw, mh, mx, my;
+	CGame* game = CGame::GetInstance();
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	sw = game->GetBackBufferWidth();
+	sh = game->GetBackBufferHeight() - 32;
+	mw = current_map->GetMapWidth();
+	mh = current_map->GetMapHeight();
+	cx -= sw / 2;
+	// CamX
+	if (cx <= 0)//Left Edge
+		cx = 0;
+	if (cx >= mw - sw)//Right Edge
+		cx = mw - sw;
 
+	//CamY
+	if (isTurnOnCamY)
+		cy -= sh / 2;
+	else
+		//cy -= sh / 2;
+		cy = mh - sh;
+
+	if (cy <= 0)//Top Edge
+		cy = 0;
+	if (cy + sh >= mh)//Bottom Edge
+		cy = mh - sh;
+
+	//Update CamY when Flying
+	//if (mario->isFlying || mario->isTailFlying)
+	//	isTurnOnCamY = true;
+	//else if (cy > mh - sh - 16)
+	//	isTurnOnCamY = false;
+
+	game->SetCamPos(ceil(cx), ceil(cy));
+	current_map->SetCamPos(cx, cy);
+	//hud->SetPosition(ceil(cx), ceil(cy + sh));
+}
 void CPlayScene::Render()
 {
 	player->Render();

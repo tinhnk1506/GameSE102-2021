@@ -318,6 +318,9 @@ class CMario : public CGameObject
 	int untouchable;
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
+	bool isFlying = false;
+	bool isTailFlying = false;
+
 	int coin;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);

@@ -52,14 +52,6 @@ void CMap::ExtractTileFromTileSet() {
 	}
 }
 
-//int CMap::GetMapWidth() {
-//	return TotalColumnsOfMap * TILE_WIDTH;
-//}
-//
-//int CMap::GetMapHeight() {
-//	return TotalRowsOfMap * TILE_HEIGHT;
-//}
-
 void CMap::SetCamPos(float x, float y) {
 	this->CamX = x;
 	this->CamY = y;
