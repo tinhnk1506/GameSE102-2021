@@ -67,7 +67,7 @@ void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
 		e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (e->nx != 0 && ceil(mBottom) != oTop)
 		{	
-			x = x0 + dx;
+			//x = x0 + dx;
 			//y = 0;
 		}
 
