@@ -41,8 +41,6 @@ public:
 	void SetCamerAutoMove(bool l) { this->isCameraAutoMove = l; }
 
 	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }
-	int GetId() { return id; }
-	void SetCamerAutoMove(bool l) { this->isCameraAutoMove = l; }
 	virtual void Load() = 0;
 	virtual void Unload() = 0;
 	virtual void Update(DWORD dt) = 0;
