@@ -28,6 +28,7 @@ protected:
 	void LoadObjects(LPCWSTR assetFile);
 
 public:
+	bool isTurnOnCamY = false;
 	bool isGameDone1 = false;
 	bool isGameDone2 = false;
 	bool isGameDone3 = false;
@@ -37,6 +38,8 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	virtual void SetCam(float cx, float cy, DWORD dt = 0);
+	void SetTurnOnCamY(bool isOn) { isTurnOnCamY = isOn; }
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 
