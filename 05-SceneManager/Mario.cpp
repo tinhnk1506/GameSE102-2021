@@ -46,12 +46,16 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		if (e->ny < 0) isOnPlatform = true;
 	}
 	else
+	{
 		if (e->nx != 0 && e->obj->IsBlocking())
 		{
 			vx = 0;
 		}
+	}
 
-	if (dynamic_cast<CGoomba*>(e->obj))
+	if (dynamic_cast<CBlock*>(e->obj))
+		OnCollisionWithBlock(e);
+	else if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
@@ -72,7 +76,7 @@ void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
 		GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (e->nx != 0 && ceil(mBottom) != oTop)
-		{
+		{	
 			//x = x0 + dx;
 			//y = 0;
 		}
@@ -98,7 +102,12 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	{
 		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			goomba->SetState(GOOMBA_STATE_DIE);
+			if (goomba->tag == GOOMBA_RED)
+				goomba->SetTag(GOOMBA_RED_NORMAL);
+			else if (goomba->tag == GOOMBA_SUPER)
+				goomba->SetTag(GOOMBA_NORMAL);
+			else
+				goomba->SetState(GOOMBA_STATE_DIE);
 			vy = -MARIO_JUMP_DEFLECT_SPEED;
 		}
 	}
@@ -116,7 +125,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 				else
 				{
 					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
+					//SetState(MARIO_STATE_DIE);
 				}
 			}
 		}
@@ -336,7 +345,7 @@ void CMario::SetState(int state)
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
 			vx = 0; vy = 0.0f;
-			//y += MARIO_SIT_HEIGHT_ADJUST;
+			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -345,13 +354,14 @@ void CMario::SetState(int state)
 		{
 			isSitting = false;
 			state = MARIO_STATE_IDLE;
-			//y -= MARIO_SIT_HEIGHT_ADJUST;
+			y -= MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
 		vx = 0.0f;
+
 		break;
 
 	case MARIO_STATE_DIE:

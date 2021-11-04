@@ -34,7 +34,6 @@ public:
 	CCoin(int type = COIN_TYPE_NORMAL);
 
 	virtual int IsCollidable() { return 0; };
-	
 	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
@@ -56,4 +55,5 @@ public:
 	}
 
 	int IsBlocking() { return 0; }
+	int IsBlocking(bool isBlocking) { return isBlocking; }
 };
