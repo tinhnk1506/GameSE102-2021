@@ -10,6 +10,8 @@
 
 #include "Collision.h"
 #include "Block.h"
+#include "QuestionBrick.h"
+#include "MushRoom.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -55,6 +57,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
+	else if (dynamic_cast<QuestionBrick*>(e->obj))
+		OnCollisionWithQuestionBrick(e);
+	else if (dynamic_cast<CMushRoom*>(e->obj))
+		OnCollisionWithMushRoom(e);
 }
 
 void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
@@ -66,7 +72,7 @@ void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
 		GetBoundingBox(mLeft, mTop, mRight, mBottom);
 		e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
 		if (e->nx != 0 && ceil(mBottom) != oTop)
-		{	
+		{
 			//x = x0 + dx;
 			//y = 0;
 		}
@@ -123,10 +129,27 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 	coin++;
 }
 
+void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+	SetLevel(MARIO_LEVEL_BIG);
+}
+
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
+{
+	QuestionBrick* qBrick = dynamic_cast<QuestionBrick*>(e->obj);
+
+	// Hit from bottom
+	if (e->ny > 0) {
+		vy = 0;
+		qBrick->SetState(QUESTION_BRICK_HIT);
+	}
 }
 
 int CMario::GetAniIdSmall()
@@ -366,7 +389,7 @@ void CMario::SetLevel(int l)
 	// Adjust position to avoid falling off platform
 	if (this->level == MARIO_LEVEL_SMALL)
 	{
-		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
 	}
 	level = l;
 }

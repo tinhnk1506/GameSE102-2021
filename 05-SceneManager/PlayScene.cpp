@@ -9,6 +9,7 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Block.h"
+#include "QuestionBrick.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -198,13 +199,13 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			player = (CMario*)obj;
 			DebugOut(L"[INFO] Player object created!\n", obj);
 			break;
-		case OBJECT_TYPE_GOOMBA:
-			/*obj = new CGoomba(tag);
-			obj->SetTag(tag);
-			obj->SetType(MOVING);*/
-			obj = new CBrick();
+			//case OBJECT_TYPE_GOOMBA:
+			//	/*obj = new CGoomba(tag);
+			//	obj->SetTag(tag);
+			//	obj->SetType(MOVING);*/
+			//	obj = new CBrick();
 
-			break;
+			//	break;
 		case OBJECT_TYPE_BRICK:
 			obj = new CBrick();
 			//obj->SetTag(tag);
@@ -219,8 +220,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			//		((CQuestionBrick*)obj)->items = nboitem;
 			//}
 			//((CQuestionBrick*)obj)->start_y = y;
-			obj = new CBrick();
-
+			obj = new QuestionBrick(option_tag_1, option_tag_2);
 			break;
 		case OBJECT_TYPE_BREAKABLEBRICK:
 			//obj = new CBreakableBrick();
@@ -279,8 +279,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);
 				obj->SetType(IGNORE_DEFINE);*/
-			obj = new CBrick();
-
+			obj = new CCoin(tag);
 			break;
 		case OBJECT_TYPE_CARD:
 			//obj = new CCard();
@@ -460,9 +459,25 @@ void CPlayScene::SetCam(float cx, float cy, DWORD dt) {
 void CPlayScene::Render()
 {
 	current_map->DrawMap();
-	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Render();
-	player->Render();
+
+	vector<LPGAMEOBJECT> objInside;
+
+	for (int i = 0; i < objects.size(); i++) {
+		if (objects[i]->GetZIndex() == -1) {
+			objInside.push_back(objects[i]);
+		}
+		else {
+			objects[i]->Render();
+		}
+	}
+
+	for (int i = 0; i < objInside.size(); i++) {
+		objInside[i]->Render();
+
+	}
+
+
+	//player->Render();
 }
 
 /*
