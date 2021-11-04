@@ -199,13 +199,11 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			player = (CMario*)obj;
 			DebugOut(L"[INFO] Player object created!\n", obj);
 			break;
-			//case OBJECT_TYPE_GOOMBA:
-			//	/*obj = new CGoomba(tag);
-			//	obj->SetTag(tag);
-			//	obj->SetType(MOVING);*/
-			//	obj = new CBrick();
-
-			//	break;
+		case OBJECT_TYPE_GOOMBA:
+			obj = new CGoomba(tag);
+			obj->SetTag(tag);
+			obj->SetType(MOVING);
+			break;
 		case OBJECT_TYPE_BRICK:
 			obj = new CBrick();
 			//obj->SetTag(tag);
@@ -255,7 +253,6 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			break;
 		case OBJECT_TYPE_BLOCK:
 			obj = new CBlock();
-
 			break;
 		case OBJECT_TYPE_ABYSS:
 			//obj = new CAbyss();
@@ -279,7 +276,8 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);
 				obj->SetType(IGNORE_DEFINE);*/
-			obj = new CCoin(tag);
+			obj = new CBrick();
+
 			break;
 		case OBJECT_TYPE_CARD:
 			//obj = new CCard();

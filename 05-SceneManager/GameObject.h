@@ -9,6 +9,9 @@
 #include "Collision.h"
 
 using namespace std;
+#define STATIC	0
+#define MOVING	1
+#define IGNORE_DEFINE	2
 
 #define ID_TEX_BBOX -100		// special texture to draw object bounding box
 #define BBOX_ALPHA 0.25f		// Bounding box transparency
@@ -16,6 +19,7 @@ using namespace std;
 class CGameObject
 {
 protected:
+	int isBlocking = 1;
 
 	float x;
 	float y;
@@ -29,6 +33,7 @@ protected:
 
 	int nx;
 
+
 	int state;
 
 	bool isDeleted;
@@ -40,9 +45,15 @@ public:
 		this->x = x, this->y = y;
 		this->start_x = x, this->start_y = y;
 	}
+public:
+	int tag = 0;
+	int type = 0;
+
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float& x, float& y) { x = this->x; y = this->y; }
 	void GetSpeed(float& vx, float& vy) { vx = this->vx; vy = this->vy; }
+	void SetTag(int tag) { this->tag = tag; }
+	void SetType(int type) { this->type = type; }
 
 	int GetState() { return this->state; }
 	virtual void Delete() { isDeleted = true; }
@@ -79,7 +90,10 @@ public:
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e) {};
 
 	// Is this object blocking other object? If YES, collision framework will automatically push the other object
-	virtual int IsBlocking() { return 1; }
+	virtual int IsBlocking() { return this->isBlocking; }
+	virtual void SetIsBlocking(int blocking) {
+		this->isBlocking = blocking;
+	}
 
 	~CGameObject();
 
