@@ -49,6 +49,12 @@
     <Filter Include="Map Objects\WorldMap">
       <UniqueIdentifier>{755e4e7a-1df1-4dfe-9b73-ccaf15cb09ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Map Objects\Items\Coin">
+      <UniqueIdentifier>{54903cc4-9d83-487b-af8d-533326dd98b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map Objects\Items\MushRoom">
+      <UniqueIdentifier>{b17804aa-6e0f-4729-9093-5181d4b83e3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -87,9 +93,6 @@
     <ClCompile Include="Brick.cpp">
       <Filter>Map Objects\Bricks</Filter>
     </ClCompile>
-    <ClCompile Include="Coin.cpp">
-      <Filter>Map Objects\Items</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameObject.cpp">
       <Filter>Map Objects\Others</Filter>
@@ -105,6 +108,12 @@
     </ClCompile>
     <ClCompile Include="QuestionBrick.cpp">
       <Filter>Map Objects\Bricks</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>Map Objects\Items\Coin</Filter>
+    </ClCompile>
+    <ClCompile Include="MushRoom.cpp">
+      <Filter>Map Objects\Items\MushRoom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -138,9 +147,6 @@
     <ClInclude Include="Brick.h">
       <Filter>Map Objects\Bricks</Filter>
     </ClInclude>
-    <ClInclude Include="Coin.h">
-      <Filter>Map Objects\Items</Filter>
-    </ClInclude>
     <ClInclude Include="Mario.h">
       <Filter>Map Objects\Player</Filter>
     </ClInclude>
@@ -170,6 +176,12 @@
     </ClInclude>
     <ClInclude Include="QuestionBrick.h">
       <Filter>Map Objects\Bricks</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>Map Objects\Items\Coin</Filter>
+    </ClInclude>
+    <ClInclude Include="MushRoom.h">
+      <Filter>Map Objects\Items\MushRoom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

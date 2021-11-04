@@ -19,6 +19,7 @@ protected:
 
 	float x;
 	float y;
+	float z = 0; // For render coin in brick and other items or enemies inside Brick and Pipe
 
 	float vx;
 	float vy;
@@ -46,6 +47,14 @@ public:
 	int GetState() { return this->state; }
 	virtual void Delete() { isDeleted = true; }
 	bool IsDeleted() { return isDeleted; }
+
+	void SetZIndex(int z) {
+		this->z = z;
+	}
+
+	int GetZIndex() {
+		return this->z;
+	}
 
 	void RenderBoundingBox();
 

@@ -5,6 +5,7 @@
 #include "Game.h"
 #include "Coin.h"
 #include "Mario.h"
+#include "MushRoom.h"
 
 QuestionBrick::QuestionBrick(int tag, int type) : CGameObject() {
 	state = QUESTION_BRICK_NORMAL;
@@ -70,14 +71,13 @@ void QuestionBrick::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 			y = start_y;
 			isFallingDown = false;
 			vy = 0;
-			/*if (tag != ITEM_COIN_QUESTION_BRICK_COIN) {
-				DebugOut(L"item::%d\n", tag);
+			if (tag != ITEM_COIN_QUESTION_BRICK_COIN) {
 				CreateItem(tag);
-			}*/
+			}
 		}
-		/*if (tag == ITEM_COIN_QUESTION_BRICK_COIN) {
+		if (tag == ITEM_COIN_QUESTION_BRICK_COIN) {
 			CreateItem(tag);
-		}*/
+		}
 	}
 
 	//DebugOut(L"[BRICK vy]::%f\n", vy);
@@ -109,41 +109,48 @@ void QuestionBrick::CreateItem(int itemType) {
 		return;
 	}
 	CPlayScene* currentScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	if (dynamic_cast<Coin*>(this->obj)) {
-		Coin* obj = dynamic_cast<Coin*>(this->obj);
+	if (dynamic_cast<CCoin*>(this->obj)) {
+		CCoin* obj = dynamic_cast<CCoin*>(this->obj);
 		obj->SetAppear(true);
 		obj->SetPosition(x, y - COIN_BBOX_HEIGHT - 1);
 		obj->SetState(COIN_STATE_UP);
-		currentScene->AddSpecialObject(obj);
+		obj->SetZIndex(-1);
+		currentScene->AddObject(obj);
 	}
-	/*if (dynamic_cast<MushRoom*>(this->obj)) {
-		MushRoom* obj = dynamic_cast<MushRoom*>(this->obj);
+	if (dynamic_cast<CMushRoom*>(this->obj)) {
+		CMushRoom* obj = dynamic_cast<CMushRoom*>(this->obj);
 		obj->SetAppear(true);
 		obj->SetPosition(x, y);
 		obj->SetState(MUSHROOM_STATE_UP);
-		currentScene->AddSpecialObject(obj);
+		obj->SetZIndex(-1);
+		currentScene->AddObject(obj);
 	}
-	if (dynamic_cast<Switch*>(this->obj)) {
-		Switch* obj = dynamic_cast<Switch*>(this->obj);
-		obj->SetAppear(true);
-		obj->SetPosition(x, y);
-		obj->SetState(SWITCH_STATE_UP);
-		currentScene->AddSpecialObject(obj);
+}
+
+CGameObject* QuestionBrick::SetUpItem(int itemType) {
+	CPlayScene* currentScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	CMario* mario = currentScene->GetPlayer();
+	int ani_set_id = -1;
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	if (totalItems >= 1) {
+		totalItems--;
 	}
-	if (dynamic_cast<Leaf*>(this->obj)) {
-		Leaf* obj = dynamic_cast<Leaf*>(this->obj);
-		obj->SetAppear(true);
-		obj->SetPosition(x, y);
-		obj->SetState(LEAF_STATE_UP);
-		currentScene->AddSpecialObject(obj);
+	else {
+		return NULL;
 	}
-	if (dynamic_cast<FireFlower*>(this->obj)) {
-		FireFlower* obj = dynamic_cast<FireFlower*>(this->obj);
-		obj->isAppear = true;
-		obj->SetPosition(x, y);
-		obj->SetState(FIRE_FLOWER_STATE_UP);
-		currentScene->AddSpecialObject(obj);
-	}*/
+	if (itemType == ITEM_COIN_QUESTION_BRICK_COIN) {
+		obj = new CCoin(COIN_TYPE_INBRICK);
+		ani_set_id = COIN_ANI_SET_ID;
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		obj->SetAnimationSet(ani_set);
+	}
+	if (itemType == ITEM_CUSTOM || itemType == ITEM_LEAF) {
+		obj = new CMushRoom();
+		ani_set_id = ITEM_MUSHROOM_ANI_SET_ID;
+		LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
+		obj->SetAnimationSet(ani_set);
+	}
+	return obj;
 }
 
 
@@ -155,7 +162,7 @@ void QuestionBrick::SetState(int state) {
 		vy = 0;
 		break;
 	case QUESTION_BRICK_HIT:
-		/*if (totalItems > 0) startPushedUp();*/
+		if (totalItems > 0) startPushedUp();
 		startPushedUp();
 		break;
 	}
