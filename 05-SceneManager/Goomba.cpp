@@ -1,5 +1,6 @@
 #include "Goomba.h"
 #include "debug.h"
+#include "Brick.h"
 
 CGoomba::CGoomba(int tag)
 {
@@ -52,6 +53,35 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 	if (!e->obj->IsBlocking()) return;
 	if (dynamic_cast<CGoomba*>(e->obj)) return;
+	if (dynamic_cast<CBrick*>(e->obj)) {
+		if (e->ny != 0)
+		{
+			vy = 0;
+			if (e->ny < 0 && tag == GOOMBA_RED && state != GOOMBA_STATE_DIE)
+			{
+				if (!walkingTimer)
+				{
+					if (jumpingStacks == GOOMBA_RED_JUMPING_STACKS)
+					{
+						SetState(GOOMBA_STATE_RED_HIGHJUMPING);
+						jumpingStacks = -1;
+					}
+					else
+					{
+						if (jumpingStacks == -1)
+							SetState(GOOMBA_STATE_RED_WINGSWALKING);
+						else
+							SetState(GOOMBA_STATE_RED_JUMPING);
+						jumpingStacks++;
+					}
+				}
+				else
+					ay = GOOMBA_GRAVITY;
+			}
+			else if (e->ny > 0)
+				ay = GOOMBA_GRAVITY;
+		}
+	}
 
 	if (e->ny != 0)
 	{
@@ -75,28 +105,19 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	if ((tag == GOOMBA_RED || tag == GOOMBA_SUPER) && state != GOOMBA_STATE_DIE && state != GOOMBA_STATE_DIE_BY_MARIO)
 	{
-		if (GetTickCount64() - walkingTimer >= GOOMBA_RED_TIME_WALKING && walkingTimer > 0)
+		if (GetTickCount64() - walkingTimer >= GOOMBA_RED_TIME_WALKING && walkingTimer)
 		{
-			walkingTimer = 0;
+			DebugOut(L"GOOMBA_RED&&GOOMBA_SUPER");
+			walkingTimer = GetTickCount64();
 			jumpingStacks = 0;
-			y -= GOOMBA_RED_BBOX_WINGS_HEIGHT - GOOMBA_RED_BBOX_HEIGHT;
+			y -= GOOMBA_RED_BBOX_WINGS_HEIGHT - GOOMBA_RED_BBOX_HEIGHT + 5; // 5 is a option can edit
 			SetState(GOOMBA_STATE_RED_JUMPING);
 		}
-		if (GetTickCount64() - chasingTimer >= GOOMBA_RED_TIME_CHASING && chasingTimer > 0)
+		if (GetTickCount64() - chasingTimer >= GOOMBA_RED_TIME_CHASING && chasingTimer)
 		{
 
 			chasingTimer = 0;
 		}
-	}
-	if (vy < -GOOMBA_JUMP_SPEED && state == GOOMBA_STATE_RED_JUMPING)
-	{
-		vy = -GOOMBA_JUMP_SPEED;
-		ay = GOOMBA_GRAVITY;
-	}
-	if (vy < -GOOMBA_HIGHJUMP_SPEED && state == GOOMBA_STATE_RED_HIGHJUMPING)
-	{
-		vy = -GOOMBA_HIGHJUMP_SPEED;
-		ay = GOOMBA_GRAVITY;
 	}
 	//// limit
 	if (vy < -GOOMBA_JUMP_SPEED && state == GOOMBA_STATE_RED_JUMPING)
@@ -109,6 +130,8 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		vy = -GOOMBA_HIGHJUMP_SPEED;
 		ay = GOOMBA_GRAVITY;
 	}
+
+
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
