@@ -69,28 +69,17 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
 {
-	CBlock* block = dynamic_cast<CBlock*>(e->obj);
-	float oLeft, oTop, oRight, oBottom;			// object Collision
-	float mLeft, mTop, mRight, mBottom;			//mario Collision
-	if (dynamic_cast<CBlock*>(e->obj)) {
-		GetBoundingBox(mLeft, mTop, mRight, mBottom);
-		e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-		if (e->nx != 0 && ceil(mBottom) != oTop)
-		{	
-			//x = x0 + dx;
-			//y = 0;
-		}
-
-		if (e->ny < 0)
-		{
-			vy = 0;
-		}
-		if (e->ny > 0 && vy < 0)
-		{
-			//y = y0 + dy;
-			y = 0;
-		}
-
+	if (e->nx != 0)
+	{
+		e->obj->SetIsBlocking(0);
+	}
+	if (e->ny < 0)
+	{
+		e->obj->SetIsBlocking(1);
+	}
+	if (e->ny > 0 && vy < 0)
+	{
+		e->obj->SetIsBlocking(0);
 	}
 }
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
