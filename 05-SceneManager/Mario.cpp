@@ -18,6 +18,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	vy += ay * dt;
 	vx += ax * dt;
 
+	this->marioDt = dt;
+
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
@@ -34,28 +36,34 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 void CMario::OnNoCollision(DWORD dt)
 {
-	x += vx * dt;
-	y += vy * dt;
+	OnNoCollistionX(dt);
+	OnNoCollistionY(dt);
 }
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+	if (dynamic_cast<CBlock*>(e->obj))
+	{
+		OnCollisionWithBlock(e, this->marioDt);
+	}
+
 	if (e->ny != 0 && e->obj->IsBlocking())
 	{
 		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
+		if (e->ny < 0) {
+			isOnPlatform = true;
+		}
 	}
 	else
 	{
 		if (e->nx != 0 && e->obj->IsBlocking())
 		{
-			vx = 0;
+			if (!dynamic_cast<CBlock*>(e->obj))
+				vx = 0;
 		}
 	}
 
-	if (dynamic_cast<CBlock*>(e->obj))
-		OnCollisionWithBlock(e);
-	else if (dynamic_cast<CGoomba*>(e->obj))
+	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
 		OnCollisionWithCoin(e);
@@ -67,19 +75,27 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushRoom(e);
 }
 
-void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e)
+void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt)
 {
-	if (e->nx != 0)
-	{
+	float oLeft, oTop, oRight, oBottom;
+	float mLeft, mTop, mRight, mBottom;
+	e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
+	GetBoundingBox(mLeft, mTop, mRight, mBottom);
+	if (e->nx != 0 && ceil(mBottom) != oTop) {
 		e->obj->SetIsBlocking(0);
+		//this->OnNoCollistionX(dt);
 	}
-	if (e->ny < 0)
-	{
+	if (e->ny < 0) {
 		e->obj->SetIsBlocking(1);
 	}
-	if (e->ny > 0 && vy < 0)
-	{
+	if (e->ny > 0) {
+		DebugOut(L"IN Y BOTTOM\n");
 		e->obj->SetIsBlocking(0);
+		//this->OnNoCollistionY(dt);
+	}
+	if (ceil(mBottom) <= oTop) {
+		e->obj->SetIsBlocking(1);
+		//this->OnNoCollistionY(dt);
 	}
 }
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -322,6 +338,8 @@ void CMario::SetState(int state)
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
 		}
+		isOnPlatform = false;
+		//ay = -MARIO_ACCELERATION_JUMP;
 		break;
 
 	case MARIO_STATE_RELEASE_JUMP:
