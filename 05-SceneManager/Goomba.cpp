@@ -107,7 +107,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	{
 		if (GetTickCount64() - walkingTimer >= GOOMBA_RED_TIME_WALKING && walkingTimer)
 		{
-			DebugOut(L"GOOMBA_RED&&GOOMBA_SUPER");
+			//DebugOut(L"GOOMBA_RED&&GOOMBA_SUPER");
 			walkingTimer = GetTickCount64();
 			jumpingStacks = 0;
 			y -= GOOMBA_RED_BBOX_WINGS_HEIGHT - GOOMBA_RED_BBOX_HEIGHT + 5; // 5 is a option can edit

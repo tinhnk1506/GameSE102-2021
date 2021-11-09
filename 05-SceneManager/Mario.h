@@ -325,7 +325,9 @@ class CMario : public CGameObject
 
 	int coin;
 
-	void OnCollisionWithBlock(LPCOLLISIONEVENT e);
+	DWORD marioDt;
+
+	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
@@ -361,6 +363,8 @@ public:
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0); }
 
 	void OnNoCollision(DWORD dt);
+	void OnNoCollistionY(DWORD dt) { y += vy * dt; };
+	void OnNoCollistionX(DWORD dt) { x += vx * dt; };
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	void SetLevel(int l);
