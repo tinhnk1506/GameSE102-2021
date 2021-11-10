@@ -14,7 +14,7 @@
 
 #define MARIO_ACCELERATION_JUMP		0.0005f
 #define MARIO_JUMP_SPEED_MAX		0.43f
-#define MARIO_JUMP_SPEED_MIN		0.4f
+#define MARIO_JUMP_SPEED_MIN		0.18f
 #define MARIO_SLOW_FALLING_SPEED	0.05f
 #define MARIO_FLY_SPEED				0.135f
 #define MARIO_JUMP_DEFLECT_SPEED	0.3f
@@ -23,6 +23,9 @@
 #define MARIO_DIE_DEFLECT_SPEED		0.3f
 #define MARIO_RUN_SPEED_MAX			0.3f
 #define MARIO_BULLET_MAX			20
+
+#define MARIO_JUMP_MAX	0.28f
+#define MARIO_SUPER_JUMP_MAX 0.30f
 
 #define MARIO_UNTOUCHABLE_TIME		1000
 #define MARIO_TURNING_TAIL_TIME		350
@@ -337,6 +340,8 @@ class CMario : public CGameObject
 	int GetAniIdBig();
 	int GetAniIdSmall();
 
+	BOOLEAN isJumping;
+
 public:
 	CMario(float x, float y) : CGameObject(x, y)
 	{
@@ -367,6 +372,9 @@ public:
 	void OnNoCollistionX(DWORD dt) { x += vx * dt; };
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
+	//Handle
+	void HandleMarioJump();
+
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 
@@ -375,4 +383,11 @@ public:
 	int GetMarioDirection() {
 		return this->ax > 0 ? 1 : -1;
 	}
+
+	void pullDown() {
+		ay = MARIO_GRAVITY; isJumping = false;
+	}
+
+	//GET
+	boolean getIsOnPlatForm() { return isOnPlatform; }
 };

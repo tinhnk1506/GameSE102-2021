@@ -95,6 +95,10 @@ public:
 		this->isBlocking = blocking;
 	}
 
+	//GET
+	float getX() { return x; }
+	float getY() { return y; }
+
 	~CGameObject();
 
 	static bool IsDeleted(const LPGAMEOBJECT& o) { return o->isDeleted; }
