@@ -70,5 +70,5 @@ void CSampleKeyHandler::KeyState(BYTE* states)
 			mario->SetState(MARIO_STATE_WALKING_LEFT);
 	}
 	else
-		mario->SetState(MARIO_STATE_IDLE);
+		if (mario->getIsOnPlatForm()) mario->SetState(MARIO_STATE_IDLE);
 }
