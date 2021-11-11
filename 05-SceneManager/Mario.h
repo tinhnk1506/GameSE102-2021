@@ -274,7 +274,9 @@
 #define MARIO_SMALL_BBOX_WIDTH  13
 #define MARIO_SMALL_BBOX_HEIGHT 16
 
-#define MARIO_BBOX_SIT_HEIGHT	0
+#define MARIO_BBOX_SIT_HEIGHT	18
+#define MARIO_SIT_HEIGHT_ADJUST	0.4f
+
 
 #endif // !MARIO_BBOX
 
@@ -323,7 +325,9 @@ class CMario : public CGameObject
 
 	int coin;
 
-	void OnCollisionWithBlock(LPCOLLISIONEVENT e);
+	DWORD marioDt;
+
+	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
@@ -359,6 +363,8 @@ public:
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0); }
 
 	void OnNoCollision(DWORD dt);
+	void OnNoCollistionY(DWORD dt) { y += vy * dt; };
+	void OnNoCollistionX(DWORD dt) { x += vx * dt; };
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	void SetLevel(int l);

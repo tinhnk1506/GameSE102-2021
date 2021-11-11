@@ -199,13 +199,11 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			player = (CMario*)obj;
 			DebugOut(L"[INFO] Player object created!\n", obj);
 			break;
-			//case OBJECT_TYPE_GOOMBA:
-			//	/*obj = new CGoomba(tag);
-			//	obj->SetTag(tag);
-			//	obj->SetType(MOVING);*/
-			//	obj = new CBrick();
-
-			//	break;
+		case OBJECT_TYPE_GOOMBA:
+			obj = new CGoomba(tag);
+			obj->SetTag(tag);
+			obj->SetType(MOVING);
+			break;
 		case OBJECT_TYPE_BRICK:
 			obj = new CBrick();
 			//obj->SetTag(tag);
@@ -254,8 +252,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 
 			break;
 		case OBJECT_TYPE_BLOCK:
-			obj = new CBlock();
-
+			obj = new CBlock(x, y);
 			break;
 		case OBJECT_TYPE_ABYSS:
 			//obj = new CAbyss();
@@ -279,7 +276,8 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);
 				obj->SetType(IGNORE_DEFINE);*/
-			obj = new CCoin(tag);
+			obj = new CBrick();
+
 			break;
 		case OBJECT_TYPE_CARD:
 			//obj = new CCard();
@@ -321,9 +319,10 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		{
 			// General object setup
 			obj->SetPosition(x, y);
-			objects.push_back(obj);
 			LPANIMATION_SET ani_set = animation_sets->Get(ani_set_id);
 			obj->SetAnimationSet(ani_set);
+			if (object_type == OBJECT_TYPE_MARIO) continue;
+			objects.push_back(obj);
 		}
 		// Insert objects to grid from file
 		//if (object_type != OBJECT_TYPE_MARIO && object_type != GRID)
@@ -400,7 +399,7 @@ void CPlayScene::Update(DWORD dt)
 	game->GetCamPos(cam_x, cam_y);
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = 0; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
@@ -411,7 +410,6 @@ void CPlayScene::Update(DWORD dt)
 	{
 		objects[i]->Update(dt, &coObjects);
 	}
-
 	if (player == NULL) return;
 	// Update camera to follow mario
 	float cx, cy;
@@ -461,6 +459,8 @@ void CPlayScene::Render()
 	current_map->DrawMap();
 
 	vector<LPGAMEOBJECT> objInside;
+
+	player->Render();
 
 	for (int i = 0; i < objects.size(); i++) {
 		if (objects[i]->GetZIndex() == -1) {
