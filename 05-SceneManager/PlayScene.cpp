@@ -12,6 +12,7 @@
 #include "QuestionBrick.h"
 
 #include "SampleKeyEventHandler.h"
+#include "Koopas.h"
 
 using namespace std;
 
@@ -235,14 +236,12 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 
 			break;
 		case OBJECT_TYPE_KOOPAS:
-			/*obj = new CKoopas();
+			obj = new CKoopas(tag);
 			obj->SetTag(tag);
 			((CKoopas*)obj)->start_tag = tag;
-			obj->SetType(MOVING);
+			//obj->SetType(MOVING);
 			((CKoopas*)obj)->start_x = x;
-			((CKoopas*)obj)->start_y = y;*/
-			obj = new CBrick();
-
+			((CKoopas*)obj)->start_y = y;
 			break;
 		case OBJECT_TYPE_BOOMERANGBROTHER:
 			/*obj = new CBoomerangBrother();
@@ -276,8 +275,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);
 				obj->SetType(IGNORE_DEFINE);*/
-			obj = new CBrick();
-
+			obj = new CCoin(tag);
 			break;
 		case OBJECT_TYPE_CARD:
 			//obj = new CCard();

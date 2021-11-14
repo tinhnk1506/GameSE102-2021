@@ -322,7 +322,6 @@ class CMario : public CGameObject
 	int level;
 	int untouchable;
 	ULONGLONG untouchable_start;
-	BOOLEAN isOnPlatform;
 	bool isFlying = false;
 	bool isTailFlying = false;
 
@@ -343,6 +342,8 @@ class CMario : public CGameObject
 	BOOLEAN isJumping;
 
 public:
+	BOOLEAN isOnPlatform;
+
 	CMario(float x, float y) : CGameObject(x, y)
 	{
 		isSitting = false;

@@ -23,7 +23,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleMarioJump();
 
 	// FOR HANDLE COLLISION WITH COLOR BLOCK
-	for (int i = 0; i < coObjects->size(); i++) {
+	/*for (int i = 0; i < coObjects->size(); i++) {
 		LPGAMEOBJECT obj = coObjects->at(i);
 		if (dynamic_cast<CBlock*>(obj))
 		{
@@ -34,7 +34,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 				obj->SetIsBlocking(1);
 			}
 		}
-	}
+	} */
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -45,7 +45,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		untouchable = 0;
 	}
 
-	isOnPlatform = false;
+	//isOnPlatform = false;
+
+	DebugOut(L"Mario->vx::%f\n", vx);
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -59,20 +61,21 @@ void CMario::OnNoCollision(DWORD dt)
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 
-	if (e->ny != 0 && e->obj->IsBlocking())
-	{
-		vy = 0;
-		ay = MARIO_GRAVITY;
-		if (e->ny < 0) {
-			isOnPlatform = true;
-		}
-	}
-	else
-	{
-		if (e->nx != 0 && e->obj->IsBlocking())
+	if (!dynamic_cast<CBlock*>(e->obj)) {
+		if (e->ny != 0 && e->obj->IsBlocking())
 		{
-			if (!dynamic_cast<CBlock*>(e->obj))
+			vy = 0;
+			ay = MARIO_GRAVITY;
+			if (e->ny < 0) {
+				isOnPlatform = true;
+			}
+		}
+		else
+		{
+			if (e->nx != 0 && e->obj->IsBlocking())
+			{
 				vx = 0;
+			}
 		}
 	}
 
@@ -88,27 +91,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushRoom(e);
 }
 
-void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt)
-{
-	/*float oLeft, oTop, oRight, oBottom;
-	float mLeft, mTop, mRight, mBottom;
-	e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-	GetBoundingBox(mLeft, mTop, mRight, mBottom);
-	if (e->nx != 0 && ceil(mBottom) != oTop) {
-		e->obj->SetIsBlocking(0);
-	}
-	if (e->obj->x < 0) {
-		DebugOut(L"IN Y TOP\n");
-		e->obj->SetIsBlocking(1);
-	}
-	if (e->ny > 0) {
-		DebugOut(L"IN Y BOTTOM\n");
-		e->obj->SetIsBlocking(0);
-	}*/
-	//if (ceil(mBottom) <= oTop) {
-	//	e->obj->SetIsBlocking(1);
-	//}
-}
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
@@ -312,9 +294,12 @@ int CMario::GetAniIdBig()
 				if (ax < 0)
 					aniId = MARIO_ANI_BIG_BRAKING_RIGHT;
 				else if (ax == MARIO_ACCEL_RUN_X)
+				{
 					aniId = MARIO_ANI_BIG_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
+				}
+				else if (ax == MARIO_ACCEL_WALK_X) {
 					aniId = MARIO_ANI_BIG_WALKING_RIGHT;
+				}
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_BIG_JUMPINGUP_RIGHT;
