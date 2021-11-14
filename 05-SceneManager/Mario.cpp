@@ -12,6 +12,7 @@
 #include "Block.h"
 #include "QuestionBrick.h"
 #include "MushRoom.h"
+#include "Koopas.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -21,20 +22,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	this->marioDt = dt;
 
 	HandleMarioJump();
-
-	// FOR HANDLE COLLISION WITH COLOR BLOCK
-	/*for (int i = 0; i < coObjects->size(); i++) {
-		LPGAMEOBJECT obj = coObjects->at(i);
-		if (dynamic_cast<CBlock*>(obj))
-		{
-			if (obj->getY() - 16 < this->y) {
-				obj->SetIsBlocking(0);
-			}
-			else {
-				obj->SetIsBlocking(1);
-			}
-		}
-	} */
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -89,6 +76,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithQuestionBrick(e);
 	else if (dynamic_cast<CMushRoom*>(e->obj))
 		OnCollisionWithMushRoom(e);
+	else if (dynamic_cast<CKoopas*>(e->obj))
+		OnCollisionWithKoopas(e);
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -134,6 +123,54 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	coin++;
+}
+
+void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
+	CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+	if (e->nx != 0) {
+		if (koopas->GetState() == KOOPAS_STATE_IN_SHELL || koopas->GetState() == KOOPAS_STATE_SHELL_UP) {
+			/*if (isReadyToHold) {
+				isHolding = true;
+				koopas->SetIsBeingHeld(true);
+			}
+			else {
+				SetState(MARIO_STATE_KICK);
+				koopas->SetState(KOOPAS_STATE_SPINNING);
+			}*/
+			koopas->SetState(KOOPAS_STATE_SPINNING);
+		}
+		else {
+			//HandleBasicMarioDie();
+		}
+	}
+	if (e->ny > 0) {
+		if (koopas->GetState() == KOOPAS_STATE_IN_SHELL || koopas->GetState() == KOOPAS_STATE_SHELL_UP) {
+			//SetState(MARIO_STATE_KICK);
+			koopas->SetState(KOOPAS_STATE_SPINNING);
+		}
+		else {
+			koopas->x = this->x + nx * 2;
+			//HandleBasicMarioDie();
+		}
+	}
+	if (e->ny < 0) {
+		CGame* game = CGame::GetInstance();
+
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
+		if (koopas->GetState() == KOOPAS_STATE_WALKING) {
+			if (koopas->tag == KOOPAS_GREEN_PARA) {
+				koopas->SetTag(KOOPAS_GREEN);
+			}
+			else koopas->SetState(KOOPAS_STATE_IN_SHELL);
+		}
+		else if (koopas->GetState() == KOOPAS_STATE_IN_SHELL) {
+			koopas->SetState(KOOPAS_STATE_SPINNING);
+		}
+		else if (koopas->GetState() == KOOPAS_STATE_SPINNING) {
+			koopas->SetState(KOOPAS_STATE_IN_SHELL);
+		}
+		//AddScore(this->x, this->y, 100);
+	}
 }
 
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)

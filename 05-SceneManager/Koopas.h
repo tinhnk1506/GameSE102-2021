@@ -83,4 +83,7 @@ public:
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e);
+	void OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
 };

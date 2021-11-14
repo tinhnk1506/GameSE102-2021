@@ -30,7 +30,6 @@ protected:
 
 
 
-	int state;
 
 
 	LPANIMATION_SET animation_set;
@@ -47,6 +46,7 @@ public:
 	int nx;
 	float vx;
 	float vy;
+	int state;
 public:
 	int tag = 0;
 	int type = 0;
