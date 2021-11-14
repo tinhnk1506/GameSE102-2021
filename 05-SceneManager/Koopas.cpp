@@ -3,6 +3,8 @@
 #include "Block.h"
 #include "Mario.h"
 #include "PlayScene.h"
+#include "BreakableBrick.h"
+#include "QuestionBrick.h"
 
 CKoopas::CKoopas(int tag)
 {
@@ -61,9 +63,69 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 			}
 		}
 	}
-
+	if (dynamic_cast<CBrick*>(e->obj))
+		OnCollisionWithBrick(e);
 	if (dynamic_cast<CBlock*>(e->obj))
 		OnCollisionWithBlock(e);
+	if (dynamic_cast<BreakableBrick*>(e->obj))
+		OnCollisionWithBreakableBrick(e);
+	if (dynamic_cast<QuestionBrick*>(e->obj))
+		OnCollisionWithQuestionBrick(e);
+}
+
+void CKoopas::OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e) {
+	if (state == KOOPAS_STATE_SPINNING) {
+		BreakableBrick* tmp = dynamic_cast<BreakableBrick*>(e->obj);
+		tmp->Break();
+		//mario->AddScore(x, y, 150);
+	}
+}
+
+void CKoopas::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e) {
+	QuestionBrick* qBrick = dynamic_cast<QuestionBrick*>(e->obj);
+	if (qBrick->state != QUESTION_BRICK_HIT)
+		qBrick->SetState(QUESTION_BRICK_HIT);
+}
+
+void CKoopas::OnCollisionWithBrick(LPCOLLISIONEVENT e) {
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
+
+	GetBoundingBox(mLeft, mTop, mRight, mBottom);
+	e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
+
+	if (e->ny < 0) {
+		this->vy = 0;
+		if (state == KOOPAS_STATE_SHELL_UP)
+			vx = 0;
+		if (tag == KOOPAS_RED && state == KOOPAS_STATE_WALKING)
+		{
+			if (this->nx > 0 && x >= e->obj->x + KOOPAS_TURN_DIFF)
+				if (CalTurnable(e->obj))
+				{
+					this->nx = -1;
+					vx = this->nx * KOOPAS_WALKING_SPEED;
+				}
+			if (this->nx < 0 && x <= e->obj->x - KOOPAS_TURN_DIFF)
+				if (CalTurnable(e->obj))
+				{
+					this->nx = 1;
+					vx = this->nx * KOOPAS_WALKING_SPEED;
+				}
+		}
+		if (tag == KOOPAS_GREEN_PARA || KOOPAS_GREEN) {
+			this->nx = -1;
+			vx = this->nx * KOOPAS_WALKING_SPEED;
+		}
+	}
+	if (e->nx != 0)
+	{
+		if (ceil(mBottom) != oTop)
+		{
+			//vx = -vx;
+			this->nx = -this->nx;
+		}
+	}
 }
 
 void CKoopas::OnCollisionWithBlock(LPCOLLISIONEVENT e) {
