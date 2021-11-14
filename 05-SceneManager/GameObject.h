@@ -21,17 +21,13 @@ class CGameObject
 protected:
 	int isBlocking = 1;
 
-	float x;
-	float y;
 	float z = 0; // For render coin in brick and other items or enemies inside Brick and Pipe
 
-	float vx;
-	float vy;
+
 
 	float start_x;
 	float start_y;
 
-	int nx;
 
 
 	int state;
@@ -46,6 +42,11 @@ public:
 		this->x = x, this->y = y;
 		this->start_x = x, this->start_y = y;
 	}
+	float x;
+	float y;
+	int nx;
+	float vx;
+	float vy;
 public:
 	int tag = 0;
 	int type = 0;
