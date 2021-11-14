@@ -88,27 +88,6 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithMushRoom(e);
 }
 
-void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt)
-{
-	/*float oLeft, oTop, oRight, oBottom;
-	float mLeft, mTop, mRight, mBottom;
-	e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-	GetBoundingBox(mLeft, mTop, mRight, mBottom);
-	if (e->nx != 0 && ceil(mBottom) != oTop) {
-		e->obj->SetIsBlocking(0);
-	}
-	if (e->obj->x < 0) {
-		DebugOut(L"IN Y TOP\n");
-		e->obj->SetIsBlocking(1);
-	}
-	if (e->ny > 0) {
-		DebugOut(L"IN Y BOTTOM\n");
-		e->obj->SetIsBlocking(0);
-	}*/
-	//if (ceil(mBottom) <= oTop) {
-	//	e->obj->SetIsBlocking(1);
-	//}
-}
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
@@ -312,9 +291,14 @@ int CMario::GetAniIdBig()
 				if (ax < 0)
 					aniId = MARIO_ANI_BIG_BRAKING_RIGHT;
 				else if (ax == MARIO_ACCEL_RUN_X)
+				{
+					DebugOut(L"RUNNING RIGHT\n");
 					aniId = MARIO_ANI_BIG_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
+				}
+				else if (ax == MARIO_ACCEL_WALK_X) {
+					DebugOut(L"WALKING RIGHT\n");
 					aniId = MARIO_ANI_BIG_WALKING_RIGHT;
+				}
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_BIG_JUMPINGUP_RIGHT;

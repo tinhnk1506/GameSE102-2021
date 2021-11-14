@@ -143,6 +143,8 @@
   <ItemGroup>
     <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BreakableBrick.cpp" />
+    <ClCompile Include="BreakPiece.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="Collision.cpp" />
@@ -166,6 +168,8 @@
     <ClInclude Include="Animations.h" />
     <ClInclude Include="AssetIDs.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="BreakableBrick.h" />
+    <ClInclude Include="BreakPiece.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Coin.h" />
     <ClInclude Include="Collision.h" />

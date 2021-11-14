@@ -276,8 +276,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);
 				obj->SetType(IGNORE_DEFINE);*/
-			obj = new CBrick();
-
+			obj = new CCoin(tag);
 			break;
 		case OBJECT_TYPE_CARD:
 			//obj = new CCard();

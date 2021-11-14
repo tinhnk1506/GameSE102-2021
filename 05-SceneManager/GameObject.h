@@ -36,11 +36,12 @@ protected:
 
 	int state;
 
-	bool isDeleted;
 
 	LPANIMATION_SET animation_set;
 
 public:
+	bool isDeleted;
+
 	void SetPosition(float x, float y) {
 		this->x = x, this->y = y;
 		this->start_x = x, this->start_y = y;
