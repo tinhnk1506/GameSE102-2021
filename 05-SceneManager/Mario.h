@@ -322,7 +322,6 @@ class CMario : public CGameObject
 	int level;
 	int untouchable;
 	ULONGLONG untouchable_start;
-	BOOLEAN isOnPlatform;
 	bool isFlying = false;
 	bool isTailFlying = false;
 
@@ -336,6 +335,8 @@ class CMario : public CGameObject
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithMushRoom(LPCOLLISIONEVENT e);
+	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);
+	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -343,6 +344,8 @@ class CMario : public CGameObject
 	BOOLEAN isJumping;
 
 public:
+	BOOLEAN isOnPlatform;
+
 	CMario(float x, float y) : CGameObject(x, y)
 	{
 		isSitting = false;
@@ -350,7 +353,7 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY;
 
-		level = MARIO_LEVEL_SMALL;
+		level = MARIO_LEVEL_BIG;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
@@ -382,6 +385,10 @@ public:
 
 	int GetMarioDirection() {
 		return this->ax > 0 ? 1 : -1;
+	}
+
+	int GetLevel() {
+		return this->level;
 	}
 
 	void pullDown() {

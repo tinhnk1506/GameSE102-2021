@@ -55,6 +55,9 @@
     <Filter Include="Map Objects\Items\MushRoom">
       <UniqueIdentifier>{b17804aa-6e0f-4729-9093-5181d4b83e3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Map Objects\Items\Leaf">
+      <UniqueIdentifier>{50adf38a-f93c-4425-8fa8-932f7b85c51b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -114,6 +117,18 @@
     </ClCompile>
     <ClCompile Include="MushRoom.cpp">
       <Filter>Map Objects\Items\MushRoom</Filter>
+    </ClCompile>
+    <ClCompile Include="BreakableBrick.cpp">
+      <Filter>Map Objects\Bricks</Filter>
+    </ClCompile>
+    <ClCompile Include="BreakPiece.cpp">
+      <Filter>Map Objects\Bricks</Filter>
+    </ClCompile>
+    <ClCompile Include="Koopas.cpp">
+      <Filter>Map Objects\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Leaf.cpp">
+      <Filter>Map Objects\Items\Leaf</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +197,18 @@
     </ClInclude>
     <ClInclude Include="MushRoom.h">
       <Filter>Map Objects\Items\MushRoom</Filter>
+    </ClInclude>
+    <ClInclude Include="BreakableBrick.h">
+      <Filter>Map Objects\Bricks</Filter>
+    </ClInclude>
+    <ClInclude Include="BreakPiece.h">
+      <Filter>Map Objects\Bricks</Filter>
+    </ClInclude>
+    <ClInclude Include="Koopas.h">
+      <Filter>Map Objects\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Leaf.h">
+      <Filter>Map Objects\Items\Leaf</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

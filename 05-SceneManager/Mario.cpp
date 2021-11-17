@@ -12,6 +12,8 @@
 #include "Block.h"
 #include "QuestionBrick.h"
 #include "MushRoom.h"
+#include "Koopas.h"
+#include "Leaf.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -22,20 +24,6 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	HandleMarioJump();
 
-	// FOR HANDLE COLLISION WITH COLOR BLOCK
-	for (int i = 0; i < coObjects->size(); i++) {
-		LPGAMEOBJECT obj = coObjects->at(i);
-		if (dynamic_cast<CBlock*>(obj))
-		{
-			if (obj->getY() - 16 < this->y) {
-				obj->SetIsBlocking(0);
-			}
-			else {
-				obj->SetIsBlocking(1);
-			}
-		}
-	}
-
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
@@ -45,7 +33,9 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		untouchable = 0;
 	}
 
-	isOnPlatform = false;
+	//isOnPlatform = false;
+
+	DebugOut(L"Mario->vx::%f\n", vx);
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -59,20 +49,21 @@ void CMario::OnNoCollision(DWORD dt)
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 {
 
-	if (e->ny != 0 && e->obj->IsBlocking())
-	{
-		vy = 0;
-		ay = MARIO_GRAVITY;
-		if (e->ny < 0) {
-			isOnPlatform = true;
-		}
-	}
-	else
-	{
-		if (e->nx != 0 && e->obj->IsBlocking())
+	if (!dynamic_cast<CBlock*>(e->obj)) {
+		if (e->ny != 0 && e->obj->IsBlocking())
 		{
-			if (!dynamic_cast<CBlock*>(e->obj))
+			vy = 0;
+			ay = MARIO_GRAVITY;
+			if (e->ny < 0) {
+				isOnPlatform = true;
+			}
+		}
+		else
+		{
+			if (e->nx != 0 && e->obj->IsBlocking())
+			{
 				vx = 0;
+			}
 		}
 	}
 
@@ -86,29 +77,12 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithQuestionBrick(e);
 	else if (dynamic_cast<CMushRoom*>(e->obj))
 		OnCollisionWithMushRoom(e);
+	else if (dynamic_cast<CKoopas*>(e->obj))
+		OnCollisionWithKoopas(e);
+	else if (dynamic_cast<CLeaf*>(e->obj))
+		OnCollisionWithLeaf(e);
 }
 
-void CMario::OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt)
-{
-	/*float oLeft, oTop, oRight, oBottom;
-	float mLeft, mTop, mRight, mBottom;
-	e->obj->GetBoundingBox(oLeft, oTop, oRight, oBottom);
-	GetBoundingBox(mLeft, mTop, mRight, mBottom);
-	if (e->nx != 0 && ceil(mBottom) != oTop) {
-		e->obj->SetIsBlocking(0);
-	}
-	if (e->obj->x < 0) {
-		DebugOut(L"IN Y TOP\n");
-		e->obj->SetIsBlocking(1);
-	}
-	if (e->ny > 0) {
-		DebugOut(L"IN Y BOTTOM\n");
-		e->obj->SetIsBlocking(0);
-	}*/
-	//if (ceil(mBottom) <= oTop) {
-	//	e->obj->SetIsBlocking(1);
-	//}
-}
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
@@ -152,6 +126,60 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	coin++;
+}
+
+void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
+{
+	e->obj->Delete();
+	// TODO: change level to tail
+}
+
+void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
+	CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+	if (e->nx != 0) {
+		if (koopas->GetState() == KOOPAS_STATE_IN_SHELL || koopas->GetState() == KOOPAS_STATE_SHELL_UP) {
+			/*if (isReadyToHold) {
+				isHolding = true;
+				koopas->SetIsBeingHeld(true);
+			}
+			else {
+				SetState(MARIO_STATE_KICK);
+				koopas->SetState(KOOPAS_STATE_SPINNING);
+			}*/
+			koopas->SetState(KOOPAS_STATE_SPINNING);
+		}
+		else {
+			//HandleBasicMarioDie();
+		}
+	}
+	if (e->ny > 0) {
+		if (koopas->GetState() == KOOPAS_STATE_IN_SHELL || koopas->GetState() == KOOPAS_STATE_SHELL_UP) {
+			//SetState(MARIO_STATE_KICK);
+			koopas->SetState(KOOPAS_STATE_SPINNING);
+		}
+		else {
+			koopas->x = this->x + nx * 2;
+			//HandleBasicMarioDie();
+		}
+	}
+	if (e->ny < 0) {
+		CGame* game = CGame::GetInstance();
+
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
+		if (koopas->GetState() == KOOPAS_STATE_WALKING) {
+			if (koopas->tag == KOOPAS_GREEN_PARA) {
+				koopas->SetTag(KOOPAS_GREEN);
+			}
+			else koopas->SetState(KOOPAS_STATE_IN_SHELL);
+		}
+		else if (koopas->GetState() == KOOPAS_STATE_IN_SHELL) {
+			koopas->SetState(KOOPAS_STATE_SPINNING);
+		}
+		else if (koopas->GetState() == KOOPAS_STATE_SPINNING) {
+			koopas->SetState(KOOPAS_STATE_IN_SHELL);
+		}
+		//AddScore(this->x, this->y, 100);
+	}
 }
 
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
@@ -312,9 +340,12 @@ int CMario::GetAniIdBig()
 				if (ax < 0)
 					aniId = MARIO_ANI_BIG_BRAKING_RIGHT;
 				else if (ax == MARIO_ACCEL_RUN_X)
+				{
 					aniId = MARIO_ANI_BIG_RUNNING_RIGHT;
-				else if (ax == MARIO_ACCEL_WALK_X)
+				}
+				else if (ax == MARIO_ACCEL_WALK_X) {
 					aniId = MARIO_ANI_BIG_WALKING_RIGHT;
+				}
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_BIG_JUMPINGUP_RIGHT;
