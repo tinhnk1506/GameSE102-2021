@@ -43,7 +43,8 @@
 #define MARIO_KILLSTREAK_TIME		1000
 #define MARIO_PIPE_TIME				1000
 #define MARIO_GAMEDONE_TIME			3000
-
+#define MARIO_STATE_KICK			411
+#define MARIO_STATE_HOLDING			444
 
 #define MARIO_RUNNING_STACKS		7
 #define MARIO_WALKING_FAST_STACKS	4
@@ -345,6 +346,9 @@ class CMario : public CGameObject
 
 public:
 	BOOLEAN isOnPlatform;
+	BOOLEAN isHolding;
+	BOOLEAN isReadyToHold;
+	BOOLEAN isKick;
 
 	CMario(float x, float y) : CGameObject(x, y)
 	{

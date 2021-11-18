@@ -35,7 +35,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	//isOnPlatform = false;
 
-	DebugOut(L"Mario->vx::%f\n", vx);
+	//DebugOut(L"Mario->vx::%f\n", vx);
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
@@ -138,17 +138,18 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 	CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
 	if (e->nx != 0) {
 		if (koopas->GetState() == KOOPAS_STATE_IN_SHELL || koopas->GetState() == KOOPAS_STATE_SHELL_UP) {
-			/*if (isReadyToHold) {
+			if (isReadyToHold) {
 				isHolding = true;
 				koopas->SetIsBeingHeld(true);
 			}
 			else {
 				SetState(MARIO_STATE_KICK);
 				koopas->SetState(KOOPAS_STATE_SPINNING);
-			}*/
-			koopas->SetState(KOOPAS_STATE_SPINNING);
+			}
 		}
 		else {
+			SetState(MARIO_STATE_DIE);
+			DebugOut(L"MARIO_STATE_DIE");
 			//HandleBasicMarioDie();
 		}
 	}
@@ -160,6 +161,8 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 		else {
 			koopas->x = this->x + nx * 2;
 			//HandleBasicMarioDie();
+			DebugOut(L"MARIO_STATE_DIE");
+
 		}
 	}
 	if (e->ny < 0) {
@@ -180,6 +183,8 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 		}
 		//AddScore(this->x, this->y, 100);
 	}
+
+
 }
 
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
@@ -225,18 +230,32 @@ int CMario::GetAniIdSmall()
 				aniId = MARIO_ANI_SMALL_JUMPINGUP_LEFT;
 		}
 	}
-	if (state == MARIO_STATE_JUMP || state == MARIO_STATE_RELEASE_JUMP) {
+	if (state == MARIO_STATE_JUMP || state == MARIO_STATE_RELEASE_JUMP || isHolding || isKick) {
 		if (nx > 0) {
 			aniId = MARIO_ANI_SMALL_JUMPINGUP_RIGHT;
 			/*if (isFlying) {
 				ani = MARIO_ANI_SMALL_FLY_RIGHT;
 			}*/
+			if (isHolding) {
+				aniId = MARIO_ANI_SMALL_HOLD_RUNNING_RIGHT;
+			}
+			else if (isKick)
+			{
+				aniId = MARIO_ANI_SMALL_KICKING_RIGHT;
+			}
 		}
 		if (nx < 0) {
 			aniId = MARIO_ANI_SMALL_JUMPINGUP_LEFT;
 			/*if (isFlying) {
 				ani = MARIO_ANI_SMALL_FLY_LEFT;
 			}*/
+			if (isHolding) {
+				aniId = MARIO_ANI_SMALL_HOLD_RUNNING_LEFT;
+			}
+			else if (isKick)
+			{
+				aniId = MARIO_ANI_SMALL_KICKING_LEFT;
+			}
 		}
 	}
 	else
@@ -307,18 +326,33 @@ int CMario::GetAniIdBig()
 				aniId = MARIO_ANI_BIG_WALKING_FAST_LEFT;
 		}
 	}
-	if (state == MARIO_STATE_JUMP || state == MARIO_STATE_RELEASE_JUMP) {
+	if (state == MARIO_STATE_JUMP || state == MARIO_STATE_RELEASE_JUMP || isHolding || isKick) {
 		if (nx > 0) {
 			aniId = MARIO_ANI_BIG_JUMPINGUP_RIGHT;
 			/*if (isFlying) {
 				ani = MARIO_ANI_BIG_FLY_RIGHT;
 			}*/
+			if (isHolding) {
+				aniId = MARIO_ANI_BIG_HOLD_RUNNING_RIGHT;
+			}
+			else if (isKick)
+			{
+				aniId = MARIO_ANI_BIG_KICKING_RIGHT;
+
+			}
 		}
 		if (nx < 0) {
 			aniId = MARIO_ANI_BIG_JUMPINGUP_LEFT;
 			/*if (isFlying) {
 				ani = MARIO_ANI_SMALL_FLY_LEFT;
 			}*/
+			if (isHolding) {
+				aniId = MARIO_ANI_BIG_HOLD_RUNNING_LEFT;
+			}
+			else if (isKick)
+			{
+				aniId = MARIO_ANI_BIG_KICKING_LEFT;
+			}
 		}
 	}
 	else
@@ -462,6 +496,8 @@ void CMario::SetState(int state)
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
 		ax = 0;
+		break;
+	case MARIO_STATE_KICK:
 		break;
 	}
 

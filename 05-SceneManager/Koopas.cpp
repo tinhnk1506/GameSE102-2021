@@ -19,6 +19,8 @@ CKoopas::CKoopas(int tag)
 }
 
 void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+
 	if (GetTickCount64() - shell_start >= KOOPAS_SHELL_TIME && shell_start != 0 && state != KOOPAS_STATE_SPINNING) {
 		shell_start = 0;
 		StartReviving();
@@ -28,16 +30,49 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 	{
 		reviving_start = 0;
 		y -= (KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_SHELL_HEIGHT) + 1.0f;
-		/*	if (isBeingHeld)
-			{
-				isBeingHeld = false;
-				mario->SetIsHolding(false);
-			}*/
+		if (isBeingHeld)
+		{
+			isBeingHeld = false;
+			mario->isHolding = false;
+		}
 		SetState(KOOPAS_STATE_WALKING);
 	}
 	this->dt = dt;
 	vy += KOOPAS_GRAVITY * dt;
 
+	if (!isBeingHeld)
+	{
+		if (tag == KOOPAS_GREEN_PARA)
+			vy += KOOPAS_PARA_GRAVITY * dt;
+		if (tag == KOOPAS_RED || tag == KOOPAS_GREEN)
+			vy += KOOPAS_GRAVITY * dt;
+	}
+
+	if (!mario->isHolding && isBeingHeld)
+	{
+		DebugOut(L"buong tay ");
+		isBeingHeld = false;
+		if ((state == KOOPAS_STATE_IN_SHELL || state == KOOPAS_STATE_SHELL_UP) && !isBeingHeld)
+		{
+			nx = mario->nx;
+			SetState(KOOPAS_STATE_SPINNING);
+		}
+	}
+	if (isBeingHeld)
+	{
+		y = mario->getY() - 3; //TODO change const number
+		vy = 0;
+		int tmp = (int)mario->nx;
+		x = mario->getX() + tmp * (MARIO_BIG_BBOX_WIDTH);
+		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
+		{
+			if (tmp > 0)
+				x = mario->getX() + tmp * (MARIO_SMALL_BBOX_WIDTH);
+			else
+				x = mario->getX() + tmp * (KOOPAS_BBOX_WIDTH);
+			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
+		}
+	}
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
@@ -71,6 +106,11 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithBreakableBrick(e);
 	if (dynamic_cast<QuestionBrick*>(e->obj))
 		OnCollisionWithQuestionBrick(e);
+	if (dynamic_cast<CKoopas*>(e->obj))
+		OnCollisionWithKoopas(e);
+	if (dynamic_cast<CGoomba*>(e->obj))
+		OnCollisionWithGoomba(e);
+
 }
 
 void CKoopas::OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e) {
@@ -83,7 +123,7 @@ void CKoopas::OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e) {
 
 void CKoopas::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e) {
 	QuestionBrick* qBrick = dynamic_cast<QuestionBrick*>(e->obj);
-	if (qBrick->state != QUESTION_BRICK_HIT)
+	if (qBrick->state != QUESTION_BRICK_HIT && state == KOOPAS_STATE_SPINNING)
 		qBrick->SetState(QUESTION_BRICK_HIT);
 }
 
@@ -163,6 +203,52 @@ void CKoopas::OnCollisionWithBlock(LPCOLLISIONEVENT e) {
 			x += vx * this->dt;
 		if (state == KOOPAS_STATE_SHELL_UP && e->ny > 0)
 			y += vy * this->dt;
+	}
+}
+
+void CKoopas::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
+
+	CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+	DebugOut(L"CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj); %d %d \n");
+	if (koopas->state == KOOPAS_STATE_SPINNING)
+	{
+		if (koopas->tag == KOOPAS_GREEN_PARA)
+			koopas->tag = KOOPAS_GREEN;
+		SetState(KOOPAS_STATE_DEATH);
+		//mario->AddScore(x, y, 100, true);
+	}
+	else
+	{
+		if ((koopas->state == KOOPAS_STATE_SHELL_UP || koopas->state == KOOPAS_STATE_IN_SHELL)
+			&& state == KOOPAS_STATE_WALKING)
+		{
+			DebugOut(L"else - if \n");
+		}
+		if (koopas->state == KOOPAS_STATE_WALKING)
+		{
+			DebugOut(L"else - else \n");
+			this->vx = -this->vx;
+			this->nx = -this->nx;
+			koopas->vx = -koopas->vx;
+			koopas->nx = -koopas->nx;
+		}
+	}
+}
+
+void CKoopas::OnCollisionWithGoomba(LPCOLLISIONEVENT e) {
+	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+
+	if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING)
+	{
+		goomba->SetState(GOOMBA_STATE_DIE);
+		vy = -MARIO_JUMP_DEFLECT_SPEED;
+	}
+	else
+	{
+		goomba->vx = -goomba->vx;
+		goomba->nx = -goomba->nx;
+		this->vx = -this->vx;
+		this->nx = -this->nx;
 	}
 }
 
@@ -248,7 +334,7 @@ void CKoopas::SetState(int state)
 		vy = 0;
 		break;
 	case KOOPAS_STATE_DEATH:
-		//y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT + 1;
+		y += KOOPAS_BBOX_HEIGHT - KOOPAS_BBOX_HEIGHT + 1;
 		vx = 0;
 		vy = 0;
 		break;

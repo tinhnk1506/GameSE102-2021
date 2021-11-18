@@ -56,6 +56,7 @@ class CKoopas : public CGameObject
 	virtual void Render();
 	DWORD dt;
 public:
+
 	bool isBeingHeld = false;
 	bool isKillable = false;
 	float lastStanding_Y;
@@ -86,4 +87,9 @@ public:
 	void OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
+	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);
+	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+
+	//void OnCollisionWithPlan(LPCOLLISIONEVENT e);
+
 };
