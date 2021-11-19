@@ -115,7 +115,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 				else
 				{
 					DebugOut(L">>> Mario DIE >>> \n");
-					//SetState(MARIO_STATE_DIE);
+					SetState(MARIO_STATE_DIE);
 				}
 			}
 		}
@@ -148,7 +148,16 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 			}
 		}
 		else {
-			SetState(MARIO_STATE_DIE);
+			if (level > MARIO_LEVEL_SMALL)
+			{
+				level = MARIO_LEVEL_SMALL;
+				StartUntouchable();
+			}
+			else
+			{
+				DebugOut(L">>> Mario DIE >>> \n");
+				SetState(MARIO_STATE_DIE);
+			}
 			DebugOut(L"MARIO_STATE_DIE");
 			//HandleBasicMarioDie();
 		}
