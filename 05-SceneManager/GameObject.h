@@ -101,6 +101,13 @@ public:
 	float getX() { return x; }
 	float getY() { return y; }
 
+	float GetWidth()
+	{
+		float left, top, right, bottom;
+		GetBoundingBox(left, top, right, bottom);
+		return right - left;
+	}
+
 	~CGameObject();
 
 	static bool IsDeleted(const LPGAMEOBJECT& o) { return o->isDeleted; }
