@@ -313,6 +313,8 @@
 #define MARIO	0
 #define LUIGI	1
 
+#define MARIO_NORMAL_FLY_MAX 0.95f
+
 class CMario : public CGameObject
 {
 	BOOLEAN isSitting;
@@ -329,6 +331,7 @@ class CMario : public CGameObject
 	int coin;
 
 	DWORD marioDt;
+	DWORD fly_start;
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -350,6 +353,8 @@ public:
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
 	BOOLEAN isKick;
+
+	BOOLEAN normalFlyPullDown = false;
 
 	CMario(float x, float y) : CGameObject(x, y)
 	{
@@ -383,9 +388,11 @@ public:
 	//Handle
 	void HandleMarioJump();
 	void HandleBasicMarioDie();
+	void HandleFlying();
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
+	void StartFlying() { fly_start = GetTickCount64(); }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 

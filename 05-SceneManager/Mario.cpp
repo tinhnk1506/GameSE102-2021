@@ -25,6 +25,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	this->marioDt = dt;
 
 	HandleMarioJump();
+	HandleFlying();
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -85,8 +86,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<FireBullet*>(e->obj))
 		OnCollisionWithFireBullet(e);
-	else if (dynamic_cast<PiranhaPlant*>(e->obj))
-		HandleBasicMarioDie();
+	/*else if (dynamic_cast<PiranhaPlant*>(e->obj))
+		HandleBasicMarioDie();*/
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -136,7 +137,7 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithFireBullet(LPCOLLISIONEVENT e) {
 	e->obj->Delete();
-	HandleBasicMarioDie();
+	//HandleBasicMarioDie();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
@@ -253,9 +254,9 @@ int CMario::GetAniIdSmall()
 	if (state == MARIO_STATE_JUMP || state == MARIO_STATE_RELEASE_JUMP || isHolding || isKick) {
 		if (nx > 0) {
 			aniId = MARIO_ANI_SMALL_JUMPINGUP_RIGHT;
-			/*if (isFlying) {
-				ani = MARIO_ANI_SMALL_FLY_RIGHT;
-			}*/
+			if (isFlying) {
+				aniId = MARIO_ANI_SMALL_FLY_RIGHT;
+			}
 			if (isHolding) {
 				aniId = MARIO_ANI_SMALL_HOLD_RUNNING_RIGHT;
 			}
@@ -266,9 +267,9 @@ int CMario::GetAniIdSmall()
 		}
 		if (nx < 0) {
 			aniId = MARIO_ANI_SMALL_JUMPINGUP_LEFT;
-			/*if (isFlying) {
-				ani = MARIO_ANI_SMALL_FLY_LEFT;
-			}*/
+			if (isFlying) {
+				aniId = MARIO_ANI_SMALL_FLY_LEFT;
+			}
 			if (isHolding) {
 				aniId = MARIO_ANI_SMALL_HOLD_RUNNING_LEFT;
 			}
@@ -304,6 +305,9 @@ int CMario::GetAniIdSmall()
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_SMALL_JUMPINGUP_RIGHT;
+					if (isFlying) {
+						aniId = MARIO_ANI_SMALL_FLY_RIGHT;
+					}
 				}
 
 			}
@@ -318,6 +322,9 @@ int CMario::GetAniIdSmall()
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_SMALL_JUMPINGUP_LEFT;
+					if (isFlying) {
+						aniId = MARIO_ANI_SMALL_FLY_LEFT;
+					}
 				}
 			}
 
@@ -480,6 +487,10 @@ void CMario::SetState(int state)
 			ay = -MARIO_ACCELERATION_JUMP;
 			isJumping = true;
 		}
+		if (ax == MARIO_ACCEL_RUN_X) {
+			isFlying = true;
+			StartFlying();
+		}
 		isOnPlatform = false;
 		break;
 
@@ -612,3 +623,29 @@ void CMario::HandleBasicMarioDie() {
 	}
 }
 
+void CMario::HandleFlying() {
+	if (level != -5) {
+		if (isFlying || isTailFlying)
+		{
+			if (vy <= -MARIO_NORMAL_FLY_MAX) {
+				normalFlyPullDown = true;
+			}
+		}
+	}
+	if (normalFlyPullDown && isFlying || normalFlyPullDown && isTailFlying) {
+		ay = 0.001f;
+	}
+	if (GetTickCount64() - fly_start > MARIO_FLYING_TIME && fly_start != 0 && isFlying)
+	{
+		fly_start = 0;
+		//isRunning = false;
+		isFlying = false;
+	}
+	/*if (GetTickCount64() - tail_fly_start > MARIO_FLYING_TIME && tail_fly_start != 0 && isTailFlying)
+	{
+		tail_fly_start = 0;
+		speedStack = 0;
+		isRunning = false;
+		isTailFlying = false;
+	}*/
+}
