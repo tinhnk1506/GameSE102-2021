@@ -58,6 +58,15 @@
     <Filter Include="Map Objects\Items\Leaf">
       <UniqueIdentifier>{50adf38a-f93c-4425-8fa8-932f7b85c51b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Map Objects\Enemies\PiranhaPlant">
+      <UniqueIdentifier>{3cfa6e5f-131c-4038-bb27-ff83a8297609}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map Objects\Enemies\PiranhaPlantFire">
+      <UniqueIdentifier>{0f82c105-e0d9-41f0-b1c3-2eead1b83554}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Map Objects\Others\FireBullet">
+      <UniqueIdentifier>{9e20a65e-4e24-499e-aca1-5cc2d077e06a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -129,6 +138,15 @@
     </ClCompile>
     <ClCompile Include="Leaf.cpp">
       <Filter>Map Objects\Items\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="PiranhaPlantFire.cpp">
+      <Filter>Map Objects\Enemies\PiranhaPlantFire</Filter>
+    </ClCompile>
+    <ClCompile Include="FireBullet.cpp">
+      <Filter>Map Objects\Others\FireBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="PiranhaPlant.cpp">
+      <Filter>Map Objects\Enemies\PiranhaPlant</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +227,15 @@
     </ClInclude>
     <ClInclude Include="Leaf.h">
       <Filter>Map Objects\Items\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="PiranhaPlant.h">
+      <Filter>Map Objects\Enemies\PiranhaPlant</Filter>
+    </ClInclude>
+    <ClInclude Include="PiranhaPlantFire.h">
+      <Filter>Map Objects\Enemies\PiranhaPlantFire</Filter>
+    </ClInclude>
+    <ClInclude Include="FireBullet.h">
+      <Filter>Map Objects\Others\FireBullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

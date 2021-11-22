@@ -13,6 +13,8 @@
 
 #include "SampleKeyEventHandler.h"
 #include "Koopas.h"
+#include "BreakableBrick.h"
+#include "PiranhaPlantFire.h"
 
 using namespace std;
 
@@ -223,7 +225,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			break;
 		case OBJECT_TYPE_BREAKABLEBRICK:
 			//obj = new CBreakableBrick();
-			obj = new CBrick();
+			obj = new BreakableBrick(x, y, option_tag_1, option_tag_2, option_tag_3);
 
 			break;
 		case OBJECT_TYPE_MUSICALBRICK:
@@ -259,18 +261,14 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 
 			break;
 		case OBJECT_TYPE_PIRANHAPLANT:
-			/*		obj = new CPlant();
-					((CPlant*)obj)->SetLimitY(y);
-					obj->SetType(MOVING);*/
-			obj = new CBrick();
-
+			obj = new PiranhaPlant();
+			((PiranhaPlant*)obj)->SetLimitY(y);
+			obj->SetZIndex(-1);
 			break;
 		case OBJECT_TYPE_FIREPIRANHAPLANT:
-			/*	obj = new CFirePlant(tag);
-				((CFirePlant*)obj)->SetLimitY(y);
-				obj->SetType(MOVING);*/
-			obj = new CBrick();
-
+			obj = new PiranhaPlantFire(tag);
+			((PiranhaPlantFire*)obj)->SetLimitY(y);
+			obj->SetZIndex(-1);
 			break;
 		case OBJECT_TYPE_COIN:
 			/*	obj = new CCoin(tag);

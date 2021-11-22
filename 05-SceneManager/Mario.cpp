@@ -14,6 +14,8 @@
 #include "MushRoom.h"
 #include "Koopas.h"
 #include "Leaf.h"
+#include "FireBullet.h"
+#include "PiranhaPlant.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -81,6 +83,10 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithKoopas(e);
 	else if (dynamic_cast<CLeaf*>(e->obj))
 		OnCollisionWithLeaf(e);
+	else if (dynamic_cast<FireBullet*>(e->obj))
+		OnCollisionWithFireBullet(e);
+	else if (dynamic_cast<PiranhaPlant*>(e->obj))
+		HandleBasicMarioDie();
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -126,6 +132,11 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	coin++;
+}
+
+void CMario::OnCollisionWithFireBullet(LPCOLLISIONEVENT e) {
+	e->obj->Delete();
+	HandleBasicMarioDie();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
@@ -585,6 +596,19 @@ void CMario::HandleMarioJump() {
 			}
 		}
 
+	}
+}
+
+void CMario::HandleBasicMarioDie() {
+	if (level > MARIO_LEVEL_SMALL)
+	{
+		level = MARIO_LEVEL_SMALL;
+		StartUntouchable();
+	}
+	else
+	{
+		DebugOut(L">>> Mario DIE >>> \n");
+		SetState(MARIO_STATE_DIE);
 	}
 }
 
