@@ -110,14 +110,12 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithKoopas(e);
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
-
 }
 
 void CKoopas::OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e) {
 	if (state == KOOPAS_STATE_SPINNING) {
 		BreakableBrick* tmp = dynamic_cast<BreakableBrick*>(e->obj);
 		tmp->Break();
-		//mario->AddScore(x, y, 150);
 	}
 }
 

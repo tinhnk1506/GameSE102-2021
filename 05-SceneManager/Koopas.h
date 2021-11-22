@@ -89,6 +89,7 @@ public:
 	void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	void OncollisionWithBreakableBrick(LPCOLLISIONEVENT e);
 
 	//void OnCollisionWithPlan(LPCOLLISIONEVENT e);
 

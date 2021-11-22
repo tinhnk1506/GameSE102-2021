@@ -17,5 +17,5 @@ public:
 
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 1; }
-	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
+	//virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 };
