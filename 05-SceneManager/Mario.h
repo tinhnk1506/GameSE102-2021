@@ -80,6 +80,8 @@
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
 
+#define MARIO_STATE_TRANSFORM		11
+
 // SMALL
 #define MARIO_ANI_SMALL_IDLE_RIGHT			0
 #define MARIO_ANI_SMALL_WALKING_RIGHT		1
@@ -307,11 +309,14 @@
 #define MARIO_RENDER_ALPHA				255
 #define MARIO_FIRE_BULLETS				2
 #define MARIO_SITTING_RENDER_DIFF_5		5 
+#define MARIO_TRANSFORM_TIME 500
 
 #define ABYSS_HIGH 460
 
 #define MARIO	0
 #define LUIGI	1
+
+#define MARIO_NORMAL_FLY_MAX 0.3f
 
 class CMario : public CGameObject
 {
@@ -329,6 +334,9 @@ class CMario : public CGameObject
 	int coin;
 
 	DWORD marioDt;
+	DWORD fly_start;
+	DWORD start_transform;
+
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -350,6 +358,11 @@ public:
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
 	BOOLEAN isKick;
+	BOOLEAN isBangAni = false;
+	BOOLEAN isTransforming = false;
+	BOOLEAN normalFlyPullDown = false;
+	BOOLEAN isChangingY = false;
+	BOOLEAN isAttacked = false;
 
 	CMario(float x, float y) : CGameObject(x, y)
 	{
@@ -383,9 +396,21 @@ public:
 	//Handle
 	void HandleMarioJump();
 	void HandleBasicMarioDie();
+	void HandleFlying();
+	void HandleTransform(int level);
+	void HandleChangeYTransform();
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
+	void StartFlying() { fly_start = GetTickCount64(); }
+	void StartTransform(int level) {
+		if (this->level == MARIO_LEVEL_TAIL) isBangAni = true;
+		isTransforming = true;
+		start_transform = GetTickCount64();
+		SetLevel(level);
+	}
+
+	void StopTransform() { isTransforming = false; start_transform = 0; /*isChangingY = false;*/ }
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
