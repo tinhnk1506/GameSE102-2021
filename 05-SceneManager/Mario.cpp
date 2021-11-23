@@ -24,7 +24,8 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	this->marioDt = dt;
 
-	HandleMarioJump();
+	if(!isFlying) 
+		HandleMarioJump();
 	HandleFlying();
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
@@ -410,6 +411,9 @@ int CMario::GetAniIdBig()
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_BIG_JUMPINGUP_RIGHT;
+					if (isFlying) {
+						aniId = MARIO_ANI_BIG_FLY_RIGHT;
+					}
 				}
 			}
 			else // vx < 0
@@ -423,6 +427,9 @@ int CMario::GetAniIdBig()
 
 				if (!isOnPlatform) {
 					aniId = MARIO_ANI_BIG_JUMPINGUP_LEFT;
+					if (isFlying) {
+						aniId = MARIO_ANI_BIG_FLY_LEFT;
+					}
 				}
 			}
 
@@ -487,10 +494,11 @@ void CMario::SetState(int state)
 			ay = -MARIO_ACCELERATION_JUMP;
 			isJumping = true;
 		}
-		if (ax == MARIO_ACCEL_RUN_X) {
+		if (abs(ax) == MARIO_ACCEL_RUN_X) {
 			isFlying = true;
 			StartFlying();
 		}
+		normalFlyPullDown = false;
 		isOnPlatform = false;
 		break;
 

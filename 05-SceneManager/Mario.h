@@ -313,7 +313,7 @@
 #define MARIO	0
 #define LUIGI	1
 
-#define MARIO_NORMAL_FLY_MAX 0.95f
+#define MARIO_NORMAL_FLY_MAX 0.3f
 
 class CMario : public CGameObject
 {
