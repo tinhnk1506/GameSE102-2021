@@ -24,9 +24,10 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 
 	this->marioDt = dt;
 
-	if(!isFlying) 
+	if (!isFlying)
 		HandleMarioJump();
 	HandleFlying();
+	HandleTransform(level);
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -212,7 +213,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
-	SetLevel(MARIO_LEVEL_BIG);
+	StartTransform(MARIO_LEVEL_BIG);
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
@@ -449,6 +450,17 @@ void CMario::Render()
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
 
+	if (state == MARIO_STATE_TRANSFORM) {
+		if (nx > 0) {
+			aniId = MARIO_ANI_TRANSFORM_SMALL_RIGHT;
+		}
+		else aniId = MARIO_ANI_TRANSFORM_SMALL_LEFT;
+		if (level == MARIO_LEVEL_TAIL || isBangAni || level == MARIO_LEVEL_FIRE) {
+			aniId = MARIO_ANI_TRANSFORM_BANG;
+		}
+
+	}
+
 	animation_set->at(aniId)->Render(x, y);
 	RenderBoundingBox();
 
@@ -528,9 +540,11 @@ void CMario::SetState(int state)
 	case MARIO_STATE_IDLE:
 		ax = 0.0f;
 		vx = 0.0f;
-
 		break;
-
+	case MARIO_STATE_TRANSFORM:
+		vx = 0;
+		vy = 0;
+		break;
 	case MARIO_STATE_DIE:
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
@@ -656,4 +670,33 @@ void CMario::HandleFlying() {
 		isRunning = false;
 		isTailFlying = false;
 	}*/
+}
+
+void CMario::HandleChangeYTransform() {
+	if (state == MARIO_STATE_TRANSFORM) {
+		if (level == MARIO_LEVEL_SMALL && !isChangingY) {
+			y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT;
+		}
+		if (level == MARIO_LEVEL_BIG && !isChangingY) {
+			y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT + 3;
+		}
+		if (level == MARIO_LEVEL_TAIL && !isChangingY) {
+			y -= MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT;
+		}
+		isChangingY = true;
+	}
+}
+
+void CMario::HandleTransform(int level) {
+	if (isTransforming) {
+		SetState(MARIO_STATE_TRANSFORM);
+		HandleChangeYTransform();
+		if (GetTickCount64() - start_transform > MARIO_TRANSFORMING_TIME) {
+			StopTransform();
+			isBangAni = false;
+			if (isAttacked) {
+				StartUntouchable();
+			}
+		}
+	}
 }
