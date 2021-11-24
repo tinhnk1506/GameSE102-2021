@@ -460,8 +460,12 @@ void CMario::Render()
 		}
 
 	}
-
-	animation_set->at(aniId)->Render(x, y);
+	if (isSitting) {
+		animation_set->at(aniId)->Render(x, y + 5);
+	}
+	else {
+		animation_set->at(aniId)->Render(x, y);
+	}
 	RenderBoundingBox();
 
 }
