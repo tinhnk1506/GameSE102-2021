@@ -328,8 +328,7 @@ class CMario : public CGameObject
 	int level;
 	int untouchable;
 	ULONGLONG untouchable_start;
-	bool isFlying = false;
-	bool isTailFlying = false;
+	
 
 	int coin;
 
@@ -363,6 +362,8 @@ public:
 	BOOLEAN normalFlyPullDown = false;
 	BOOLEAN isChangingY = false;
 	BOOLEAN isAttacked = false;
+	BOOLEAN isFlying = false;
+	BOOLEAN isTailFlying = false;
 
 	CMario(float x, float y) : CGameObject(x, y)
 	{

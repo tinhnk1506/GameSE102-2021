@@ -441,10 +441,10 @@ void CPlayScene::SetCam(float cx, float cy, DWORD dt) {
 		cy = mh - sh;
 
 	//Update CamY when Flying
-	//if (mario->isFlying || mario->isTailFlying)
-	//	isTurnOnCamY = true;
-	//else if (cy > mh - sh - 16)
-	//	isTurnOnCamY = false;
+	if (mario->isFlying || mario->isTailFlying)
+		isTurnOnCamY = true;
+	else if (cy > mh - sh - 16)
+		isTurnOnCamY = false;
 
 	game->SetCamPos(ceil(cx), ceil(cy));
 	current_map->SetCamPos(cx, cy);
