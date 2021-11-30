@@ -70,6 +70,9 @@
     <Filter Include="Map Objects\Items\Switch">
       <UniqueIdentifier>{92cdcfb7-97c6-46fa-858f-5b28fa639ebd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Map Objects\Others\Tail">
+      <UniqueIdentifier>{208d2a80-0dbe-48a4-850a-c808b36506b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -153,6 +156,9 @@
     </ClCompile>
     <ClCompile Include="Switch.cpp">
       <Filter>Map Objects\Items\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="Tail.cpp">
+      <Filter>Map Objects\Others\Tail</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +251,9 @@
     </ClInclude>
     <ClInclude Include="Switch.h">
       <Filter>Map Objects\Items\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="Tail.h">
+      <Filter>Map Objects\Others\Tail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

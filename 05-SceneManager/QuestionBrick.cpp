@@ -4,7 +4,6 @@
 #include "PlayScene.h"
 #include "Game.h"
 #include "Coin.h"
-#include "Mario.h"
 #include "MushRoom.h"
 #include "Leaf.h"
 #include "Switch.h"

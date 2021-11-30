@@ -1,6 +1,7 @@
 #include "Goomba.h"
 #include "debug.h"
 #include "Brick.h"
+#include "PlayScene.h"
 
 CGoomba::CGoomba(int tag)
 {
@@ -95,12 +96,33 @@ void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
+	CPlayScene* currentScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	CMario* mario = currentScene->GetPlayer();
 	vy += ay * dt;
 	vx += ax * dt;
 	if ((state == GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT))
 	{
 		isDeleted = true;
 		return;
+	}
+
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
+	if (mario != NULL && state != GOOMBA_STATE_DIE) {
+		if (mario->isTuring && mario->GetLevel() == MARIO_LEVEL_TAIL && state != GOOMBA_STATE_DIE /*&& state != GOOMBA_STATE_DIE_BY_TAIL*/)
+		{
+			mario->tail->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+			GetBoundingBox(oLeft, oTop, oRight, oBottom);
+			if (isColliding(floor(mLeft), mTop, ceil(mRight), mBottom))
+			{
+				/*mario->AddScore(x, y, 100);*/
+				nx = mario->nx;
+				//SetState(GOOMBA_STATE_DIE_BY_TAIL);
+				SetState(GOOMBA_STATE_DIE);
+				mario->tail->ShowHitEffect();
+				return;
+			}
+		}
 	}
 
 	if ((tag == GOOMBA_RED || tag == GOOMBA_SUPER) && state != GOOMBA_STATE_DIE && state != GOOMBA_STATE_DIE_BY_MARIO)

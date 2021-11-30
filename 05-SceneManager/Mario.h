@@ -1,9 +1,8 @@
 #pragma once
-#include "GameObject.h"
 
 #include "Animations.h"
-
-#include "debug.h"
+#include "GameObject.h"
+#include "Tail.h"
 
 #define MARIO_WALKING_SPEED_START	0.0001f 
 #define MARIO_WALKING_SPEED_MAX		0.15f
@@ -319,6 +318,7 @@
 
 #define MARIO_NORMAL_FLY_MAX 0.3f
 
+
 class CMario : public CGameObject
 {
 	float maxVx;
@@ -337,8 +337,6 @@ class CMario : public CGameObject
 	DWORD start_transform;
 	DWORD start_turning_state;
 	DWORD start_turning;
-
-	Tail* tail;
 
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
@@ -377,7 +375,8 @@ public:
 	BOOLEAN isTuring = false;
 	int turningStack = 0;
 
-	CMario(float x, float y) : CGameObject(x, y)
+	CTail* tail;
+	CMario(float x, float y)
 	{
 		isSitting = false;
 		maxVx = 0.0f;
@@ -385,13 +384,14 @@ public:
 		ay = MARIO_GRAVITY;
 
 		//level = MARIO_LEVEL_SMALL;
-		level = level = MARIO_LEVEL_BIG;
+		level = level = MARIO_LEVEL_TAIL;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
-		this->tail = new Tail(80, y);
+		tail = new CTail(80, y);
 	}
+
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);

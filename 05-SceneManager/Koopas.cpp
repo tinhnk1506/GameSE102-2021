@@ -1,10 +1,10 @@
 #include "Koopas.h"
 #include "Brick.h"
 #include "Block.h"
-#include "Mario.h"
 #include "PlayScene.h"
 #include "BreakableBrick.h"
 #include "QuestionBrick.h"
+#include "debug.h"
 
 CKoopas::CKoopas(int tag)
 {

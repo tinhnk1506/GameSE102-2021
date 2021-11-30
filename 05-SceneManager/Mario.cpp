@@ -1,13 +1,10 @@
 #include <algorithm>
-#include "debug.h"
-
 #include "Mario.h"
+#include "debug.h"
 #include "Game.h"
-
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
-
 #include "Collision.h"
 #include "Block.h"
 #include "QuestionBrick.h"
@@ -109,41 +106,41 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e) {
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
-	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+	//CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	// jump on top >> kill Goomba and deflect a bit 
-	if (e->ny < 0)
-	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
-		{
-			if (goomba->tag == GOOMBA_RED)
-				goomba->SetTag(GOOMBA_RED_NORMAL);
-			else if (goomba->tag == GOOMBA_SUPER)
-				goomba->SetTag(GOOMBA_NORMAL);
-			else
-				goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
-		}
-	}
-	else // hit by Goomba
-	{
-		if (untouchable == 0)
-		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
-		}
-	}
+	//// jump on top >> kill Goomba and deflect a bit 
+	//if (e->ny < 0)
+	//{
+	//	if (goomba->GetState() != GOOMBA_STATE_DIE)
+	//	{
+	//		if (goomba->tag == GOOMBA_RED)
+	//			goomba->SetTag(GOOMBA_RED_NORMAL);
+	//		else if (goomba->tag == GOOMBA_SUPER)
+	//			goomba->SetTag(GOOMBA_NORMAL);
+	//		else
+	//			goomba->SetState(GOOMBA_STATE_DIE);
+	//		vy = -MARIO_JUMP_DEFLECT_SPEED;
+	//	}
+	//}
+	//else // hit by Goomba
+	//{
+	//	if (untouchable == 0)
+	//	{
+	//		if (goomba->GetState() != GOOMBA_STATE_DIE)
+	//		{
+	//			if (level > MARIO_LEVEL_SMALL)
+	//			{
+	//				level = MARIO_LEVEL_SMALL;
+	//				StartUntouchable();
+	//			}
+	//			else
+	//			{
+	//				DebugOut(L">>> Mario DIE >>> \n");
+	//				SetState(MARIO_STATE_DIE);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
