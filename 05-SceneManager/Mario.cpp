@@ -29,6 +29,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		HandleMarioJump();
 	HandleFlying();
 	HandleTransform(level);
+	HandleTurning();
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -42,7 +43,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//isOnPlatform = false;
 
 	//DebugOut(L"Mario->vx::%f\n", vx);
-
+	tail->Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -574,7 +575,9 @@ void CMario::Render()
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
 	else if (level == MARIO_LEVEL_TAIL)
+	{
 		aniId = GetAniIdTail();
+	}
 
 	if (state == MARIO_STATE_TRANSFORM) {
 		if (nx > 0) {
@@ -590,7 +593,25 @@ void CMario::Render()
 		animation_set->at(aniId)->Render(x, y + 5);
 	}
 	else if (level == MARIO_LEVEL_TAIL) {
-		animation_set->at(aniId)->Render(nx > 0 ? x - 3 : x + 3, y);
+		if (state == MARIO_STATE_TAIL_ATTACK)
+		{
+			DebugOut(L"[TURNING_STACK]::%d\n", turningStack);
+			if (isTuring && nx > 0) {
+				if (turningStack == 1 || turningStack == 5) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_1_ID)->Draw(x - 8, y);
+				if (turningStack == 2) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_2_ID)->Draw(x, y);
+				if (turningStack == 3) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_3_ID)->Draw(x, y);
+				if (turningStack == 4) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_4_ID)->Draw(x, y);
+			}
+			if (isTuring && nx < 0) {
+				if (turningStack == 1 || turningStack == 5) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_1_ID)->Draw(x, y);
+				if (turningStack == 2) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_2_ID)->Draw(x, y);
+				if (turningStack == 3) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_3_ID)->Draw(x - 8, y);
+				if (turningStack == 4)
+					CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_4_ID)->Draw(x, y);
+			}
+		}
+		else animation_set->at(aniId)->Render(nx > 0 ? x - 3 : x + 3, y);
+		this->tail->Render();
 	}
 	else {
 		animation_set->at(aniId)->Render(x, y);
@@ -685,8 +706,16 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_KICK:
 		break;
+	case MARIO_STATE_TAIL_ATTACK:
+		if (!isTuring) {
+			turningStack = 0;
+			//isTuring = true;
+			StartTurning();
+		}
+		/*if (previousState == MARIO_STATE_SITDOWN)
+			y -= MARIO_BIG_BBOX_HEIGHT - MARIO_BBOX_SIT_HEIGHT;*/
+		break;
 	}
-
 	CGameObject::SetState(state);
 }
 
@@ -832,4 +861,19 @@ void CMario::HandleTransform(int level) {
 			}
 		}
 	}
+}
+
+void CMario::HandleTurning() {
+
+	if (GetTickCount64() - start_turning >= MARIO_TURNING_STATE_TIME && isTuring) {
+		start_turning = GetTickCount64();
+		turningStack++;
+	}
+	if (GetTickCount64() - start_turning_state > MARIO_TURNING_TAIL_TIME && isTuring) {
+		isTuring = false;
+		start_turning_state = 0;
+		start_turning = 0;
+		turningStack = 0;
+	}
+
 }

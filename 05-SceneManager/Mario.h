@@ -45,6 +45,7 @@
 #define MARIO_GAMEDONE_TIME			3000
 #define MARIO_STATE_KICK			411
 #define MARIO_STATE_HOLDING			444
+#define MARIO_STATE_TAIL_ATTACK		14
 
 #define MARIO_RUNNING_STACKS		7
 #define MARIO_WALKING_FAST_STACKS	4
@@ -320,7 +321,6 @@
 
 class CMario : public CGameObject
 {
-	BOOLEAN isSitting;
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -328,13 +328,17 @@ class CMario : public CGameObject
 	int level;
 	int untouchable;
 	ULONGLONG untouchable_start;
-	
+
 
 	int coin;
 
 	DWORD marioDt;
 	DWORD fly_start;
 	DWORD start_transform;
+	DWORD start_turning_state;
+	DWORD start_turning;
+
+	Tail* tail;
 
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
@@ -366,6 +370,12 @@ public:
 	BOOLEAN isAttacked = false;
 	BOOLEAN isFlying = false;
 	BOOLEAN isTailFlying = false;
+	BOOLEAN isSitting;
+
+
+	// TAIL_ATTACK
+	BOOLEAN isTuring = false;
+	int turningStack = 0;
 
 	CMario(float x, float y) : CGameObject(x, y)
 	{
@@ -380,6 +390,7 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+		this->tail = new Tail(80, y);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
@@ -403,6 +414,7 @@ public:
 	void HandleFlying();
 	void HandleTransform(int level);
 	void HandleChangeYTransform();
+	void HandleTurning();
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
@@ -413,6 +425,7 @@ public:
 		start_transform = GetTickCount64();
 		SetLevel(level);
 	}
+	void StartTurning() { start_turning_state = GetTickCount64(); isTuring = true; }
 
 	void StopTransform() { isTransforming = false; start_transform = 0; /*isChangingY = false;*/ }
 
