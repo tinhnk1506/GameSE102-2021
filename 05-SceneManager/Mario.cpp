@@ -16,6 +16,7 @@
 #include "Leaf.h"
 #include "FireBullet.h"
 #include "PiranhaPlant.h"
+#include "Switch.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -90,6 +91,19 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithFireBullet(e);
 	/*else if (dynamic_cast<PiranhaPlant*>(e->obj))
 		HandleBasicMarioDie();*/
+	else if (dynamic_cast<Switch*>(e->obj))
+		OnCollisionWithPSwitch(e);
+}
+
+void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e) {
+	Switch* sw = dynamic_cast<Switch*>(e->obj);
+	if (e->ny < 0) {
+		if (sw->GetState() != SWITCH_STATE_PRESSED) {
+			sw->SetState(SWITCH_STATE_PRESSED);
+			sw->isDeleted = true;
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
@@ -463,6 +477,7 @@ void CMario::Render()
 	if (isSitting) {
 		animation_set->at(aniId)->Render(x, y + 5);
 	}
+
 	else {
 		animation_set->at(aniId)->Render(x, y);
 	}

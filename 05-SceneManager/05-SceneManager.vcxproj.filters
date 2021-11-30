@@ -67,6 +67,9 @@
     <Filter Include="Map Objects\Others\FireBullet">
       <UniqueIdentifier>{9e20a65e-4e24-499e-aca1-5cc2d077e06a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Map Objects\Items\Switch">
+      <UniqueIdentifier>{92cdcfb7-97c6-46fa-858f-5b28fa639ebd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -147,6 +150,9 @@
     </ClCompile>
     <ClCompile Include="PiranhaPlant.cpp">
       <Filter>Map Objects\Enemies\PiranhaPlant</Filter>
+    </ClCompile>
+    <ClCompile Include="Switch.cpp">
+      <Filter>Map Objects\Items\Switch</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +242,9 @@
     </ClInclude>
     <ClInclude Include="FireBullet.h">
       <Filter>Map Objects\Others\FireBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="Switch.h">
+      <Filter>Map Objects\Items\Switch</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
