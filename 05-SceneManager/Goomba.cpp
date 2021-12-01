@@ -109,7 +109,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	float mLeft, mTop, mRight, mBottom;
 	float oLeft, oTop, oRight, oBottom;
 	if (mario != NULL && state != GOOMBA_STATE_DIE) {
-		if (mario->isTuring && mario->GetLevel() == MARIO_LEVEL_TAIL && state != GOOMBA_STATE_DIE /*&& state != GOOMBA_STATE_DIE_BY_TAIL*/)
+		if (mario->isTuring && mario->GetLevel() == MARIO_LEVEL_TAIL && state != GOOMBA_STATE_DIE && state != GOOMBA_STATE_DIE_BY_MARIO)
 		{
 			mario->tail->GetBoundingBox(mLeft, mTop, mRight, mBottom);
 			GetBoundingBox(oLeft, oTop, oRight, oBottom);
@@ -117,8 +117,7 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 			{
 				/*mario->AddScore(x, y, 100);*/
 				nx = mario->nx;
-				//SetState(GOOMBA_STATE_DIE_BY_TAIL);
-				SetState(GOOMBA_STATE_DIE);
+				SetState(GOOMBA_STATE_DIE_BY_MARIO);
 				mario->tail->ShowHitEffect();
 				return;
 			}
@@ -205,6 +204,12 @@ void CGoomba::SetState(int state)
 		y += GOOMBA_NORMAL_BBOX_HEIGHT - GOOMBA_BBOX_HEIGHT_DIE;
 		vx = 0;
 		vy = 0;
+		break;
+	case GOOMBA_STATE_DIE_BY_MARIO:
+		vy = -GOOMBA_DIE_DEFLECT_SPEED;
+		vx = -vx;
+		ay = GOOMBA_GRAVITY;
+		die_start = GetTickCount64();
 		break;
 	case GOOMBA_STATE_WALKING:
 		vx = -GOOMBA_WALKING_SPEED;
