@@ -1,9 +1,8 @@
 #pragma once
-#include "GameObject.h"
 
 #include "Animations.h"
-
-#include "debug.h"
+#include "GameObject.h"
+#include "Tail.h"
 
 #define MARIO_WALKING_SPEED_START	0.0001f 
 #define MARIO_WALKING_SPEED_MAX		0.15f
@@ -45,6 +44,7 @@
 #define MARIO_GAMEDONE_TIME			3000
 #define MARIO_STATE_KICK			411
 #define MARIO_STATE_HOLDING			444
+#define MARIO_STATE_TAIL_ATTACK		14
 
 #define MARIO_RUNNING_STACKS		7
 #define MARIO_WALKING_FAST_STACKS	4
@@ -318,9 +318,9 @@
 
 #define MARIO_NORMAL_FLY_MAX 0.3f
 
+
 class CMario : public CGameObject
 {
-	BOOLEAN isSitting;
 	float maxVx;
 	float ax;				// acceleration on x 
 	float ay;				// acceleration on y 
@@ -328,13 +328,15 @@ class CMario : public CGameObject
 	int level;
 	int untouchable;
 	ULONGLONG untouchable_start;
-	
+
 
 	int coin;
 
 	DWORD marioDt;
 	DWORD fly_start;
 	DWORD start_transform;
+	DWORD start_turning_state;
+	DWORD start_turning;
 
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
@@ -346,9 +348,11 @@ class CMario : public CGameObject
 	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithFireBullet(LPCOLLISIONEVENT e);
+	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdTail();
 
 	BOOLEAN isJumping;
 
@@ -364,20 +368,30 @@ public:
 	BOOLEAN isAttacked = false;
 	BOOLEAN isFlying = false;
 	BOOLEAN isTailFlying = false;
+	BOOLEAN isSitting;
 
-	CMario(float x, float y) : CGameObject(x, y)
+
+	// TAIL_ATTACK
+	BOOLEAN isTuring = false;
+	int turningStack = 0;
+
+	CTail* tail;
+	CMario(float x, float y)
 	{
 		isSitting = false;
 		maxVx = 0.0f;
 		ax = 0.0f;
 		ay = MARIO_GRAVITY;
 
-		level = MARIO_LEVEL_SMALL;
+		//level = MARIO_LEVEL_SMALL;
+		level = level = MARIO_LEVEL_TAIL;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+		tail = new CTail(80, y);
 	}
+
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
@@ -400,6 +414,7 @@ public:
 	void HandleFlying();
 	void HandleTransform(int level);
 	void HandleChangeYTransform();
+	void HandleTurning();
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
@@ -410,6 +425,7 @@ public:
 		start_transform = GetTickCount64();
 		SetLevel(level);
 	}
+	void StartTurning() { start_turning_state = GetTickCount64(); isTuring = true; }
 
 	void StopTransform() { isTransforming = false; start_transform = 0; /*isChangingY = false;*/ }
 

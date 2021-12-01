@@ -1,13 +1,10 @@
 #include <algorithm>
-#include "debug.h"
-
 #include "Mario.h"
+#include "debug.h"
 #include "Game.h"
-
 #include "Goomba.h"
 #include "Coin.h"
 #include "Portal.h"
-
 #include "Collision.h"
 #include "Block.h"
 #include "QuestionBrick.h"
@@ -16,6 +13,7 @@
 #include "Leaf.h"
 #include "FireBullet.h"
 #include "PiranhaPlant.h"
+#include "Switch.h"
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -28,6 +26,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 		HandleMarioJump();
 	HandleFlying();
 	HandleTransform(level);
+	HandleTurning();
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -41,7 +40,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	//isOnPlatform = false;
 
 	//DebugOut(L"Mario->vx::%f\n", vx);
-
+	tail->Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -90,45 +89,58 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithFireBullet(e);
 	/*else if (dynamic_cast<PiranhaPlant*>(e->obj))
 		HandleBasicMarioDie();*/
+	else if (dynamic_cast<Switch*>(e->obj))
+		OnCollisionWithPSwitch(e);
+}
+
+void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e) {
+	Switch* sw = dynamic_cast<Switch*>(e->obj);
+	if (e->ny < 0) {
+		if (sw->GetState() != SWITCH_STATE_PRESSED) {
+			sw->SetState(SWITCH_STATE_PRESSED);
+			sw->isDeleted = true;
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
 }
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
-	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+	//CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	// jump on top >> kill Goomba and deflect a bit 
-	if (e->ny < 0)
-	{
-		if (goomba->GetState() != GOOMBA_STATE_DIE)
-		{
-			if (goomba->tag == GOOMBA_RED)
-				goomba->SetTag(GOOMBA_RED_NORMAL);
-			else if (goomba->tag == GOOMBA_SUPER)
-				goomba->SetTag(GOOMBA_NORMAL);
-			else
-				goomba->SetState(GOOMBA_STATE_DIE);
-			vy = -MARIO_JUMP_DEFLECT_SPEED;
-		}
-	}
-	else // hit by Goomba
-	{
-		if (untouchable == 0)
-		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
-		}
-	}
+	//// jump on top >> kill Goomba and deflect a bit 
+	//if (e->ny < 0)
+	//{
+	//	if (goomba->GetState() != GOOMBA_STATE_DIE)
+	//	{
+	//		if (goomba->tag == GOOMBA_RED)
+	//			goomba->SetTag(GOOMBA_RED_NORMAL);
+	//		else if (goomba->tag == GOOMBA_SUPER)
+	//			goomba->SetTag(GOOMBA_NORMAL);
+	//		else
+	//			goomba->SetState(GOOMBA_STATE_DIE);
+	//		vy = -MARIO_JUMP_DEFLECT_SPEED;
+	//	}
+	//}
+	//else // hit by Goomba
+	//{
+	//	if (untouchable == 0)
+	//	{
+	//		if (goomba->GetState() != GOOMBA_STATE_DIE)
+	//		{
+	//			if (level > MARIO_LEVEL_SMALL)
+	//			{
+	//				level = MARIO_LEVEL_SMALL;
+	//				StartUntouchable();
+	//			}
+	//			else
+	//			{
+	//				DebugOut(L">>> Mario DIE >>> \n");
+	//				SetState(MARIO_STATE_DIE);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
@@ -144,8 +156,15 @@ void CMario::OnCollisionWithFireBullet(LPCOLLISIONEVENT e) {
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 {
-	e->obj->Delete();
-	// TODO: change level to tail
+	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
+	if (e->ny != 0 || e->nx != 0) {
+		if (level != MARIO_LEVEL_TAIL) StartTransform(MARIO_LEVEL_TAIL);
+		//leaf->SetAppear(false);
+		//leaf->SetIsDestroyed(true);
+		//leaf->vy = 50.0f;
+		//AddScore(this->x, this->y, 1000);
+		e->obj->Delete();
+	}
 }
 
 void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
@@ -439,6 +458,109 @@ int CMario::GetAniIdBig()
 	return aniId;
 }
 
+int CMario::GetAniIdTail() {
+	int aniId = -1;
+	if (!isOnPlatform)
+	{
+		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		{
+			if (nx >= 0)
+				aniId = MARIO_ANI_TAIL_RUNNING_RIGHT;
+			else
+				aniId = MARIO_ANI_TAIL_RUNNING_LEFT;
+		}
+		else
+		{
+			if (nx >= 0)
+				aniId = MARIO_ANI_TAIL_WALKING_FAST_RIGHT;
+			else
+				aniId = MARIO_ANI_TAIL_WALKING_FAST_LEFT;
+		}
+	}
+	if (state == MARIO_STATE_JUMP || state == MARIO_STATE_RELEASE_JUMP || isHolding || isKick) {
+		if (nx > 0) {
+			aniId = MARIO_ANI_TAIL_JUMPINGUP_RIGHT;
+			/*if (isFlying) {
+				ani = MARIO_ANI_TAIL_FLY_RIGHT;
+			}*/
+			if (isHolding) {
+				aniId = MARIO_ANI_TAIL_HOLD_RUNNING_RIGHT;
+			}
+			else if (isKick)
+			{
+				aniId = MARIO_ANI_TAIL_KICKING_RIGHT;
+
+			}
+		}
+		if (nx < 0) {
+			aniId = MARIO_ANI_TAIL_JUMPINGUP_LEFT;
+			/*if (isFlying) {
+				ani = MARIO_ANI_SMALL_FLY_LEFT;
+			}*/
+			if (isHolding) {
+				aniId = MARIO_ANI_TAIL_HOLD_RUNNING_LEFT;
+			}
+			else if (isKick)
+			{
+				aniId = MARIO_ANI_TAIL_KICKING_LEFT;
+			}
+		}
+	}
+	else
+		if (isSitting)
+		{
+			if (nx > 0)
+				aniId = MARIO_ANI_TAIL_SITTING_RIGHT;
+			else
+				aniId = MARIO_ANI_TAIL_SITTING_LEFT;
+		}
+		else
+			if (vx == 0)
+			{
+				if (nx > 0) aniId = MARIO_ANI_TAIL_IDLE_RIGHT;
+				else aniId = MARIO_ANI_TAIL_IDLE_LEFT;
+			}
+			else if (vx > 0)
+			{
+				if (ax < 0)
+					aniId = MARIO_ANI_TAIL_BRAKING_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X)
+				{
+					aniId = MARIO_ANI_TAIL_RUNNING_RIGHT;
+				}
+				else if (ax == MARIO_ACCEL_WALK_X) {
+					aniId = MARIO_ANI_TAIL_WALKING_RIGHT;
+				}
+
+				if (!isOnPlatform) {
+					aniId = MARIO_ANI_TAIL_JUMPINGUP_RIGHT;
+					if (isFlying) {
+						aniId = MARIO_ANI_TAIL_FLY_UP_RIGHT;
+					}
+				}
+			}
+			else // vx < 0
+			{
+				if (ax > 0)
+					aniId = MARIO_ANI_TAIL_BRAKING_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X)
+					aniId = MARIO_ANI_TAIL_RUNNING_LEFT;
+				else if (ax == -MARIO_ACCEL_WALK_X)
+					aniId = MARIO_ANI_TAIL_WALKING_LEFT;
+
+				if (!isOnPlatform) {
+					aniId = MARIO_ANI_TAIL_JUMPINGUP_LEFT;
+					if (isFlying) {
+						aniId = MARIO_ANI_TAIL_FLY_UP_LEFT;
+					}
+				}
+			}
+
+	if (aniId == -1) aniId = MARIO_ANI_TAIL_IDLE_RIGHT;
+
+	return aniId;
+}
+
 void CMario::Render()
 {
 	int aniId = -1;
@@ -449,6 +571,10 @@ void CMario::Render()
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
+	else if (level == MARIO_LEVEL_TAIL)
+	{
+		aniId = GetAniIdTail();
+	}
 
 	if (state == MARIO_STATE_TRANSFORM) {
 		if (nx > 0) {
@@ -462,6 +588,27 @@ void CMario::Render()
 	}
 	if (isSitting) {
 		animation_set->at(aniId)->Render(x, y + 5);
+	}
+	else if (level == MARIO_LEVEL_TAIL) {
+		if (state == MARIO_STATE_TAIL_ATTACK)
+		{
+			DebugOut(L"[TURNING_STACK]::%d\n", turningStack);
+			if (isTuring && nx > 0) {
+				if (turningStack == 1 || turningStack == 5) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_1_ID)->Draw(x - 8, y);
+				if (turningStack == 2) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_2_ID)->Draw(x, y);
+				if (turningStack == 3) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_3_ID)->Draw(x, y);
+				if (turningStack == 4) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_RIGHT_4_ID)->Draw(x, y);
+			}
+			if (isTuring && nx < 0) {
+				if (turningStack == 1 || turningStack == 5) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_1_ID)->Draw(x, y);
+				if (turningStack == 2) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_2_ID)->Draw(x, y);
+				if (turningStack == 3) CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_3_ID)->Draw(x - 8, y);
+				if (turningStack == 4)
+					CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_4_ID)->Draw(x, y);
+			}
+		}
+		else animation_set->at(aniId)->Render(nx > 0 ? x - 3 : x + 3, y);
+		this->tail->Render();
 	}
 	else {
 		animation_set->at(aniId)->Render(x, y);
@@ -556,8 +703,16 @@ void CMario::SetState(int state)
 		break;
 	case MARIO_STATE_KICK:
 		break;
+	case MARIO_STATE_TAIL_ATTACK:
+		if (!isTuring) {
+			turningStack = 0;
+			//isTuring = true;
+			StartTurning();
+		}
+		/*if (previousState == MARIO_STATE_SITDOWN)
+			y -= MARIO_BIG_BBOX_HEIGHT - MARIO_BBOX_SIT_HEIGHT;*/
+		break;
 	}
-
 	CGameObject::SetState(state);
 }
 
@@ -703,4 +858,19 @@ void CMario::HandleTransform(int level) {
 			}
 		}
 	}
+}
+
+void CMario::HandleTurning() {
+
+	if (GetTickCount64() - start_turning >= MARIO_TURNING_STATE_TIME && isTuring) {
+		start_turning = GetTickCount64();
+		turningStack++;
+	}
+	if (GetTickCount64() - start_turning_state > MARIO_TURNING_TAIL_TIME && isTuring) {
+		isTuring = false;
+		start_turning_state = 0;
+		start_turning = 0;
+		turningStack = 0;
+	}
+
 }

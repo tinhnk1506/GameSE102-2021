@@ -1,10 +1,10 @@
 #include "Koopas.h"
 #include "Brick.h"
 #include "Block.h"
-#include "Mario.h"
 #include "PlayScene.h"
 #include "BreakableBrick.h"
 #include "QuestionBrick.h"
+#include "debug.h"
 
 CKoopas::CKoopas(int tag)
 {
@@ -37,6 +37,21 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 		}
 		SetState(KOOPAS_STATE_WALKING);
 	}
+
+	float mLeft, mTop, mRight, mBottom;
+	float oLeft, oTop, oRight, oBottom;
+	if (mario != NULL) {
+		if (mario->isTuring && mario->GetLevel() == MARIO_LEVEL_TAIL) {
+			mario->tail->GetBoundingBox(mLeft, mTop, mRight, mBottom);
+			if (isColliding(floor(mLeft), floor(mTop), ceil(mRight), ceil(mBottom))) {
+				SetState(KOOPAS_STATE_SHELL_UP);
+				if (tag == KOOPAS_GREEN_PARA)
+					tag = KOOPAS_GREEN;
+				mario->tail->ShowHitEffect();
+			}
+		}
+	}
+
 	this->dt = dt;
 	vy += KOOPAS_GRAVITY * dt;
 

@@ -1,5 +1,4 @@
 #include "MushRoom.h"
-#include "Mario.h"
 #include "PlayScene.h"
 
 CMushRoom::CMushRoom(int type) {

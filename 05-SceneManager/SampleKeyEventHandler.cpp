@@ -3,7 +3,6 @@
 #include "debug.h"
 #include "Game.h"
 
-#include "Mario.h"
 #include "PlayScene.h"
 
 void CSampleKeyHandler::OnKeyDown(int KeyCode)
@@ -27,6 +26,15 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		break;
 	case DIK_0:
 		mario->SetState(MARIO_STATE_DIE);
+		break;
+	case DIK_A:
+		/*if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetState() != MARIO_STATE_SITDOWN && !mario->GetIsReadyToRun() && !mario->GetIsHolding())
+			mario->SetState(MARIO_STATE_TAIL_ATTACK);*/
+		if (mario->GetLevel() == MARIO_LEVEL_TAIL && !mario->isSitting)
+			mario->SetState(MARIO_STATE_TAIL_ATTACK);
+		/*if (mario->GetLevel() == MARIO_LEVEL_FIRE && !mario->GetIsHolding()) mario->ShootFireBall();
+		mario->SetIsReadyToRun(true);
+		mario->SetIsReadyToHold(true);*/
 		break;
 	case DIK_R: // reset
 		//Reload();
@@ -84,5 +92,5 @@ void CSampleKeyHandler::KeyState(BYTE* states)
 		}
 	}
 	else
-		if (mario->getIsOnPlatForm()) mario->SetState(MARIO_STATE_IDLE);
+		if (mario->getIsOnPlatForm() && !mario->isTuring) mario->SetState(MARIO_STATE_IDLE);
 }
