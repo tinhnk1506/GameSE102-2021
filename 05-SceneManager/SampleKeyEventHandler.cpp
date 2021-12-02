@@ -39,7 +39,7 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 	case DIK_A:
 		/*if (mario->GetLevel() == MARIO_LEVEL_TAIL && mario->GetState() != MARIO_STATE_SITDOWN && !mario->GetIsReadyToRun() && !mario->GetIsHolding())
 			mario->SetState(MARIO_STATE_TAIL_ATTACK);*/
-		if (mario->GetLevel() == MARIO_LEVEL_TAIL && !mario->isSitting)
+		if (mario->GetLevel() == MARIO_LEVEL_TAIL && !mario->isSitting && !mario->isHolding)
 			mario->SetState(MARIO_STATE_TAIL_ATTACK);
 		/*if (mario->GetLevel() == MARIO_LEVEL_FIRE && !mario->GetIsHolding()) mario->ShootFireBall();
 		mario->SetIsReadyToRun(true);
@@ -62,6 +62,13 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 		mario->isFlapping = false;
 		mario->isFlappingTailFlying = false;
 		mario->SetState(MARIO_STATE_RELEASE_JUMP);
+		break;
+	case DIK_A:
+		if (mario->isHolding) {
+			mario->isReadyToHold = false;
+			mario->isHolding = false;
+			mario->SetState(MARIO_STATE_KICK);
+		}
 		break;
 	case DIK_DOWN:
 		mario->SetState(MARIO_STATE_SIT_RELEASE);
