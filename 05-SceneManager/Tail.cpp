@@ -46,9 +46,9 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 void CTail::Render() {
 	if (hit_start) {
 		if (nx < 0)
-			CSprites::GetInstance()->Get(TAIL_HIT_SPRITE_ID)->Draw(x - 2, y);
+			CSprites::GetInstance()->Get(TAIL_HIT_SPRITE_ID)->Draw(x - TAIL_BBOX_WIDTH, y - TAIL_BBOX_HEIGHT - 5);
 		if (nx > 0)
-			CSprites::GetInstance()->Get(TAIL_HIT_SPRITE_ID)->Draw(x + TAIL_BBOX_WIDTH - 2, y);
+			CSprites::GetInstance()->Get(TAIL_HIT_SPRITE_ID)->Draw(x + TAIL_BBOX_WIDTH - 2, y - TAIL_BBOX_HEIGHT - 5);
 	}
 	RenderBoundingBox();
 }

@@ -129,8 +129,10 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 
 void CKoopas::OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e) {
 	if (state == KOOPAS_STATE_SPINNING) {
-		BreakableBrick* tmp = dynamic_cast<BreakableBrick*>(e->obj);
-		tmp->Break();
+		if (e->nx != 0) {
+			BreakableBrick* tmp = dynamic_cast<BreakableBrick*>(e->obj);
+			tmp->Break();
+		}
 	}
 }
 

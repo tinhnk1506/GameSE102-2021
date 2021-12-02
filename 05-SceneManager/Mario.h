@@ -322,8 +322,6 @@
 class CMario : public CGameObject
 {
 	float maxVx;
-	float ax;				// acceleration on x 
-	float ay;				// acceleration on y 
 
 	int level;
 	int untouchable;
@@ -332,11 +330,13 @@ class CMario : public CGameObject
 
 	int coin;
 
-	DWORD marioDt;
-	DWORD fly_start;
-	DWORD start_transform;
-	DWORD start_turning_state;
-	DWORD start_turning;
+	ULONGLONG marioDt;
+	ULONGLONG fly_start;
+	ULONGLONG start_transform;
+	ULONGLONG start_turning_state;
+	ULONGLONG start_turning;
+	ULONGLONG tail_fly_start;
+	ULONGLONG start_kicking;
 
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
@@ -357,6 +357,9 @@ class CMario : public CGameObject
 	BOOLEAN isJumping;
 
 public:
+	float ay;				// acceleration on y 
+	float ax;				// acceleration on x 
+
 	BOOLEAN isOnPlatform;
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
@@ -367,8 +370,11 @@ public:
 	BOOLEAN isChangingY = false;
 	BOOLEAN isAttacked = false;
 	BOOLEAN isFlying = false;
-	BOOLEAN isTailFlying = false;
 	BOOLEAN isSitting;
+	BOOLEAN isFlapping = false;
+
+	BOOLEAN isTailFlying = false;
+	BOOLEAN isFlappingTailFlying = false;
 
 
 	// TAIL_ATTACK
@@ -383,8 +389,8 @@ public:
 		ax = 0.0f;
 		ay = MARIO_GRAVITY;
 
-		//level = MARIO_LEVEL_SMALL;
-		level = level = MARIO_LEVEL_TAIL;
+		level = MARIO_LEVEL_SMALL;
+		//level = level = MARIO_LEVEL_TAIL;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;
@@ -408,15 +414,23 @@ public:
 	void OnNoCollistionX(DWORD dt) { x += vx * dt; };
 	void OnCollisionWith(LPCOLLISIONEVENT e);
 
-	//Handle
+	//HANDLE
 	void HandleMarioJump();
 	void HandleBasicMarioDie();
 	void HandleFlying();
 	void HandleTransform(int level);
 	void HandleChangeYTransform();
 	void HandleTurning();
+	void HandleFlapping();
+	void HandleMarioKicking();
+	//END HANDLE
 
 	void SetLevel(int l);
+
+	//START
+	void StartTurning() { start_turning_state = GetTickCount64(); isTuring = true; }
+	void StartTailFlying() { tail_fly_start = GetTickCount64(); }
+	void StartKicking() { start_kicking = GetTickCount64(); isKick = true; }
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }
 	void StartFlying() { fly_start = GetTickCount64(); }
 	void StartTransform(int level) {
@@ -425,9 +439,13 @@ public:
 		start_transform = GetTickCount64();
 		SetLevel(level);
 	}
-	void StartTurning() { start_turning_state = GetTickCount64(); isTuring = true; }
+	//END START
 
+
+	//STOP
 	void StopTransform() { isTransforming = false; start_transform = 0; /*isChangingY = false;*/ }
+	void StopKicking() { start_kicking = 0; isKick = false; }
+	//END STOP
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 
@@ -440,7 +458,7 @@ public:
 	}
 
 	void pullDown() {
-		ay = MARIO_GRAVITY; isJumping = false;
+		if (!isFlapping) ay = MARIO_GRAVITY; isJumping = false;
 	}
 
 	//GET
