@@ -2,13 +2,14 @@
 #include "HUD.h"
 #include <string>
 #include "PlayScene.h"
+#include "debug.h"
 
 #define HUD_DIFF_FIRST_ROW		8
 #define HUD_DIFF_SECOND_ROW		16
-#define HUD_DIFF_PLAYER			11
-#define HUD_DIFF_TIME			132
-#define HUD_DIFF_MONEY			140
-#define HUD_DIFF_LIFE			36
+#define HUD_DIFF_PLAYER			110
+#define HUD_DIFF_TIME			5
+#define HUD_DIFF_MONEY			12
+#define HUD_DIFF_LIFE			93
 #define HUD_DIFF_SCORE			60
 #define HUD_DIFF_P				107
 #define HUD_DIFF_CARD			172
@@ -120,23 +121,28 @@ HUD::HUD(int typeHUD) {
 
 void HUD::Render() {
 	CSprites::GetInstance()->Get(SPRITE_HUD_ID)->Draw(x, y);
-	playerSprite->Draw(x + HUD_DIFF_PLAYER, y + HUD_DIFF_SECOND_ROW);
+	playerSprite->Draw(x - HUD_DIFF_PLAYER, y + 4);
 	for (unsigned int i = 0; i < remainTimeSprites.size(); i++)
-		remainTimeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_TIME, y + HUD_DIFF_SECOND_ROW);
+		remainTimeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_TIME, y + 4);
 	for (unsigned int i = 0; i < moneySprites.size(); i++)
-		moneySprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_MONEY, y + HUD_DIFF_FIRST_ROW);
+		moneySprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_MONEY, y - 5);
 	for (unsigned int i = 0; i < lifeSprites.size(); i++)
-		lifeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_LIFE, y + HUD_DIFF_SECOND_ROW);
+		lifeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i - HUD_DIFF_LIFE, y + 4);
 	for (unsigned int i = 0; i < scoreSprites.size(); i++) {
-		scoreSprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_SCORE, y + HUD_DIFF_SECOND_ROW);
+		scoreSprites[i]->Draw(x + FONT_BBOX_WIDTH * i - HUD_DIFF_SCORE - 7, y + 4);
 	}
+
 	for (int i = 1; i <= speedStack; i++) {
 		if (i == MARIO_RUNNING_STACKS) {
+			DebugOut(L"MARIO_RUNNING_STACKS MAX%d::>>", i);
 			if (PAni != nullptr)
 				PAni->Render(x + HUD_DIFF_P, y + HUD_DIFF_FIRST_ROW);
 		}
 		else
+		{
+			DebugOut(L"MARIO_RUNNING_STACKS  %d::>>", i);
 			powerMelterSprite[i - 1]->Draw(x + FONT_BBOX_WIDTH * (i - 1) + HUD_DIFF_SCORE, y + HUD_DIFF_FIRST_ROW);
+		}
 	}
 	RenderCard();
 }

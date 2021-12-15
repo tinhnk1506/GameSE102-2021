@@ -857,17 +857,40 @@ void CMario::HandleMarioJump() {
 }
 
 void CMario::HandleBasicMarioDie() {
-	DebugOut(L">>> Mario DIE >>>%f \n", level);
 
 	if (level > MARIO_LEVEL_SMALL)
 	{
 		level = MARIO_LEVEL_SMALL;
 		StartUntouchable();
+		DebugOut(L">>> Mario DIE >>>%f \n", level);
 	}
 	else
 	{
 		DebugOut(L">>> Mario DIE >>> \n");
 		SetState(MARIO_STATE_DIE);
+	}
+}
+
+void CMario::HandleSpeedStack() {
+	if (GetTickCount64() - start_running > MARIO_RUNNING_STACK_TIME && isRunning && vx != 0 && isReadyToRun) {
+		start_running = GetTickCount64();
+		speedStack++;
+		if (speedStack > MARIO_RUNNING_STACKS) {
+			speedStack = MARIO_RUNNING_STACKS;
+			//isReadyToFly = true;
+		}
+	}
+	if (GetTickCount64() - running_stop > MARIO_SPEED_STACK_LOST_TIME && !isRunning)
+	{
+		running_stop = GetTickCount64();
+		speedStack--;
+		//isReadyToFly = false;
+		if (speedStack < 0)
+		{
+			speedStack = 0;
+			isRunning = false;
+			isFlying = false;
+		}
 	}
 }
 
@@ -886,14 +909,14 @@ void CMario::HandleFlying() {
 	if (GetTickCount64() - fly_start > MARIO_FLYING_TIME && fly_start != 0 && isFlying)
 	{
 		fly_start = 0;
-		//isRunning = false;
+		isRunning = false;
 		isFlying = false;
 	}
 	if (GetTickCount64() - tail_fly_start > MARIO_FLYING_TIME && tail_fly_start != 0 && isTailFlying)
 	{
 		tail_fly_start = 0;
-		/*speedStack = 0;
-		isRunning = false;*/
+		speedStack = 0;
+		isRunning = false;
 		isTailFlying = false;
 	}
 }
