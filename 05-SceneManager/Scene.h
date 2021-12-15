@@ -37,7 +37,7 @@ public:
 	}
 	bool isUnLoaded = false;
 
-	int GetId() { return id; }
+	int GetSceneId() { return id; }
 	void SetCamerAutoMove(bool l) { this->isCameraAutoMove = l; }
 
 	LPKEYEVENTHANDLER GetKeyEventHandler() { return key_handler; }

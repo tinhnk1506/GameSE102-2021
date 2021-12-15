@@ -33,6 +33,7 @@
 #define MARIO_KICKING_TIME			200	
 #define MARIO_FLAPPING_TIME			200	
 #define MARIO_RUNNING_STACK_TIME	200
+#define MARIO_SPEED_STACK_LOST_TIME	200
 #define MARIO_SLOW_TIME				500
 #define MARIO_SLOW_STACK_TIME		250
 #define MARIO_RELOAD_BULLET_TIME	500
@@ -325,10 +326,13 @@ class CMario : public CGameObject
 
 	int level;
 	int untouchable;
+
+	bool isRunning = false;
+	bool isReadyToRun = false;
+	int runningStack;
+
+
 	ULONGLONG untouchable_start;
-
-
-	int coin;
 
 	ULONGLONG marioDt;
 	ULONGLONG fly_start;
@@ -337,7 +341,9 @@ class CMario : public CGameObject
 	ULONGLONG start_turning;
 	ULONGLONG tail_fly_start;
 	ULONGLONG start_kicking;
-
+	ULONGLONG start_speed_stack;
+	ULONGLONG start_running;
+	ULONGLONG running_stop;
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -357,6 +363,12 @@ class CMario : public CGameObject
 	BOOLEAN isJumping;
 
 public:
+	// hud
+	int marioScore = 0;
+	int coin = 0;
+	int marioLife = 4;
+	int speedStack = 0;
+
 	float ay;				// acceleration on y 
 	float ax;				// acceleration on x 
 
@@ -423,6 +435,7 @@ public:
 	void HandleTurning();
 	void HandleFlapping();
 	void HandleMarioKicking();
+	void HandleSpeedStack();
 	//END HANDLE
 
 	void SetLevel(int l);
@@ -439,12 +452,16 @@ public:
 		start_transform = GetTickCount64();
 		SetLevel(level);
 	}
+	void StartRunning() { start_running = GetTickCount64(); }
+	void StartSpeedStack() { start_speed_stack = GetTickCount64(); }
+
 	//END START
 
 
 	//STOP
 	void StopTransform() { isTransforming = false; start_transform = 0; /*isChangingY = false;*/ }
 	void StopKicking() { start_kicking = 0; isKick = false; }
+	void StopSpeedStack() { start_speed_stack = 0; }
 	//END STOP
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);

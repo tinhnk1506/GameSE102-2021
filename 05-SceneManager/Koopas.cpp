@@ -65,7 +65,6 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 
 	if (!mario->isHolding && isBeingHeld)
 	{
-		DebugOut(L"buong tay ");
 		isBeingHeld = false;
 		if ((state == KOOPAS_STATE_IN_SHELL || state == KOOPAS_STATE_SHELL_UP) && !isBeingHeld)
 		{
@@ -224,7 +223,6 @@ void CKoopas::OnCollisionWithBlock(LPCOLLISIONEVENT e) {
 void CKoopas::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 
 	CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
-	DebugOut(L"CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj); %d %d \n");
 	if (koopas->state == KOOPAS_STATE_SPINNING)
 	{
 		if (koopas->tag == KOOPAS_GREEN_PARA)
@@ -237,11 +235,11 @@ void CKoopas::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 		if ((koopas->state == KOOPAS_STATE_SHELL_UP || koopas->state == KOOPAS_STATE_IN_SHELL)
 			&& state == KOOPAS_STATE_WALKING)
 		{
-			DebugOut(L"else - if \n");
+			DebugOut(L"OnCollisionWithKoopas else 1 \n");
 		}
 		if (koopas->state == KOOPAS_STATE_WALKING)
 		{
-			DebugOut(L"else - else \n");
+			DebugOut(L"OnCollisionWithKoopas - else 2 \n");
 			this->vx = -this->vx;
 			this->nx = -this->nx;
 			koopas->vx = -koopas->vx;
