@@ -90,8 +90,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<FireBullet*>(e->obj))
 		OnCollisionWithFireBullet(e);
-	/*else if (dynamic_cast<PiranhaPlant*>(e->obj))
-		HandleBasicMarioDie();*/
+	//else if (dynamic_cast<PiranhaPlant*>(e->obj))
+	//	HandleBasicMarioDie();
 	else if (dynamic_cast<Switch*>(e->obj))
 		OnCollisionWithPSwitch(e);
 }
@@ -109,41 +109,32 @@ void CMario::OnCollisionWithPSwitch(LPCOLLISIONEVENT e) {
 
 void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
-	//CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
+	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	//// jump on top >> kill Goomba and deflect a bit 
-	//if (e->ny < 0)
-	//{
-	//	if (goomba->GetState() != GOOMBA_STATE_DIE)
-	//	{
-	//		if (goomba->tag == GOOMBA_RED)
-	//			goomba->SetTag(GOOMBA_RED_NORMAL);
-	//		else if (goomba->tag == GOOMBA_SUPER)
-	//			goomba->SetTag(GOOMBA_NORMAL);
-	//		else
-	//			goomba->SetState(GOOMBA_STATE_DIE);
-	//		vy = -MARIO_JUMP_DEFLECT_SPEED;
-	//	}
-	//}
-	//else // hit by Goomba
-	//{
-	//	if (untouchable == 0)
-	//	{
-	//		if (goomba->GetState() != GOOMBA_STATE_DIE)
-	//		{
-	//			if (level > MARIO_LEVEL_SMALL)
-	//			{
-	//				level = MARIO_LEVEL_SMALL;
-	//				StartUntouchable();
-	//			}
-	//			else
-	//			{
-	//				DebugOut(L">>> Mario DIE >>> \n");
-	//				SetState(MARIO_STATE_DIE);
-	//			}
-	//		}
-	//	}
-	//}
+	// jump on top >> kill Goomba and deflect a bit 
+	if (e->ny < 0)
+	{
+		if (goomba->GetState() != GOOMBA_STATE_DIE)
+		{
+			if (goomba->tag == GOOMBA_RED)
+				goomba->SetTag(GOOMBA_RED_NORMAL);
+			else if (goomba->tag == GOOMBA_SUPER)
+				goomba->SetTag(GOOMBA_NORMAL);
+			else
+				goomba->SetState(GOOMBA_STATE_DIE);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+	}
+	else // hit by Goomba
+	{
+		if (untouchable == 0)
+		{
+			if (goomba->GetState() != GOOMBA_STATE_DIE)
+			{
+				HandleBasicMarioDie();
+			}
+		}
+	}
 }
 
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
@@ -184,18 +175,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 			}
 		}
 		else {
-			if (level > MARIO_LEVEL_SMALL)
-			{
-				level = MARIO_LEVEL_SMALL;
-				StartUntouchable();
-			}
-			else
-			{
-				DebugOut(L">>> Mario DIE >>> \n");
-				SetState(MARIO_STATE_DIE);
-			}
-			DebugOut(L"MARIO_STATE_DIE");
-			//HandleBasicMarioDie();
+			HandleBasicMarioDie();
 		}
 	}
 	if (e->ny > 0) {
@@ -205,9 +185,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 		}
 		else {
 			koopas->x = this->x + nx * 2;
-			//HandleBasicMarioDie();
-			DebugOut(L"MARIO_STATE_DIE");
-
+			HandleBasicMarioDie();
 		}
 	}
 	if (e->ny < 0) {
@@ -879,6 +857,8 @@ void CMario::HandleMarioJump() {
 }
 
 void CMario::HandleBasicMarioDie() {
+	DebugOut(L">>> Mario DIE >>>%f \n", level);
+
 	if (level > MARIO_LEVEL_SMALL)
 	{
 		level = MARIO_LEVEL_SMALL;

@@ -160,6 +160,9 @@
     <ClCompile Include="Tail.cpp">
       <Filter>Map Objects\Others\Tail</Filter>
     </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>HUD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
@@ -254,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="Tail.h">
       <Filter>Map Objects\Others\Tail</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>HUD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

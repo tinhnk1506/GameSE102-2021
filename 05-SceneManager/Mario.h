@@ -327,9 +327,6 @@ class CMario : public CGameObject
 	int untouchable;
 	ULONGLONG untouchable_start;
 
-
-	int coin;
-
 	ULONGLONG marioDt;
 	ULONGLONG fly_start;
 	ULONGLONG start_transform;
@@ -357,6 +354,12 @@ class CMario : public CGameObject
 	BOOLEAN isJumping;
 
 public:
+	// hud
+	int marioScore = 0;
+	int coin = 0;
+	int marioLife = 4;
+	int speedStack = 0;
+
 	float ay;				// acceleration on y 
 	float ax;				// acceleration on x 
 

@@ -15,6 +15,8 @@
 #include "Koopas.h"
 #include "BreakableBrick.h"
 #include "PiranhaPlantFire.h"
+#include "HUD.h"
+
 
 using namespace std;
 
@@ -383,6 +385,9 @@ void CPlayScene::Load()
 
 	f.close();
 
+
+	hud = new HUD();
+
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
 }
 
@@ -411,6 +416,8 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 	player->GetPosition(cx, cy);
 	SetCam(cx, cy, dt);
+	hud->Update(dt, &coObjects);
+
 	PurgeDeletedObjects();
 }
 void CPlayScene::SetCam(float cx, float cy, DWORD dt) {
@@ -449,6 +456,8 @@ void CPlayScene::SetCam(float cx, float cy, DWORD dt) {
 	game->SetCamPos(ceil(cx), ceil(cy));
 	current_map->SetCamPos(cx, cy);
 	//hud->SetPosition(ceil(cx), ceil(cy + sh));
+	hud->SetPosition(ceil(cx+130), ceil(cy + sh+20));
+
 }
 void CPlayScene::Render()
 {
@@ -461,12 +470,12 @@ void CPlayScene::Render()
 	// sort object to render by Z
 	sort(this->objects.begin(), this->objects.end(), [](const CGameObject* lObj, const CGameObject* rObj) {
 		return lObj->z < rObj->z;
-	});
+		});
 
 	for (int i = 0; i < objects.size(); i++) {
 		objects[i]->Render();
 	}
-
+	hud->Render();
 }
 
 /*
