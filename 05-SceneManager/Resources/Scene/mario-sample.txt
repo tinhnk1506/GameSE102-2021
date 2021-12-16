@@ -15,7 +15,8 @@ start	1
 10	Resources\Textures\enemies.png	
 20	Resources\Textures\misc.png	
 21	Resources\Textures\misc2.png	
-30	Resources\Tilemap\world1-1_bank.png	
+30	Resources\Tilemap\world1-1_bank.png
+31	Resources\Tilemap\world1-1-1_bank.png		
 40	Resources\Textures\enemies1.1.png	
 50	Resources\Textures\enemies-2.png	
 60	Resources\Textures\HUD.png	

@@ -7,8 +7,9 @@
 #include "Textures.h"
 #include "Animations.h"
 #include "PlayScene.h"
+#include "BackupHUD.h"
 
-CGame * CGame::__instance = NULL;
+CGame* CGame::__instance = NULL;
 
 /*
 	Initialize DirectX, create a Direct3D device for rendering within the window, initial Sprite library for
@@ -98,7 +99,7 @@ void CGame::Init(HWND hWnd, HINSTANCE hInstance)
 	//
 	//
 
-	D3D10_SAMPLER_DESC desc; 
+	D3D10_SAMPLER_DESC desc;
 	desc.Filter = D3D10_FILTER_MIN_MAG_POINT_MIP_LINEAR;
 	desc.AddressU = D3D10_TEXTURE_ADDRESS_CLAMP;
 	desc.AddressV = D3D10_TEXTURE_ADDRESS_CLAMP;
@@ -189,8 +190,8 @@ void CGame::Draw(float x, float y, LPTEXTURE tex, RECT* rect, float alpha, int s
 		sprite.TexSize.x = 1.0f;
 		sprite.TexSize.y = 1.0f;
 
-		if (spriteWidth==0) spriteWidth = tex->getWidth();
-		if (spriteHeight==0) spriteHeight = tex->getHeight();
+		if (spriteWidth == 0) spriteWidth = tex->getWidth();
+		if (spriteHeight == 0) spriteHeight = tex->getHeight();
 	}
 	else
 	{
@@ -249,7 +250,7 @@ LPTEXTURE CGame::LoadTexture(LPCWSTR texturePath)
 		return NULL;
 	}
 
-	D3DX10_IMAGE_LOAD_INFO info; 
+	D3DX10_IMAGE_LOAD_INFO info;
 	ZeroMemory(&info, sizeof(D3DX10_IMAGE_LOAD_INFO));
 	info.Width = imageInfo.Width;
 	info.Height = imageInfo.Height;
@@ -444,7 +445,7 @@ void CGame::_ParseSection_SETTINGS(string line)
 
 	if (tokens.size() < 2) return;
 	if (tokens[0] == "start")
-		next_scene = atoi(tokens[1].c_str());
+		current_scene = atoi(tokens[1].c_str());
 	else
 		DebugOut(L"[ERROR] Unknown game setting: %s\n", ToWSTR(tokens[0]).c_str());
 }
@@ -455,10 +456,25 @@ void CGame::_ParseSection_SCENES(string line)
 
 	if (tokens.size() < 2) return;
 	int id = atoi(tokens[0].c_str());
-	LPCWSTR path = ToLPCWSTR(tokens[1]);   // file: ASCII format (single-byte char) => Wide Char
-
-	LPSCENE scene = new CPlayScene(id, path);
-	scenes[id] = scene;
+	LPCWSTR path = ToLPCWSTR(tokens[1]);
+	int type = atoi(tokens[2].c_str());
+	bool isCameraAutoMove = atoi(tokens[3].c_str());
+	if (type == PLAYSCENE)
+	{
+		LPSCENE playscene = new CPlayScene(id, path);
+		playscene->SetCamerAutoMove(isCameraAutoMove);
+		scenes[id] = playscene;
+	}
+	//if (type == WORLDSCENE)
+	//{
+	//	LPSCENE worldscene = new CWorldScene(id, path);
+	//	scenes[id] = worldscene;
+	//}
+	//if (type == INTROSCENE)
+	//{
+	//	LPSCENE introscene = new CIntroScene(id, path);
+	//	scenes[id] = introscene;
+	//}
 }
 
 /*
@@ -484,11 +500,11 @@ void CGame::Load(LPCWSTR gameFile)
 		if (line == "[SETTINGS]") { section = GAME_FILE_SECTION_SETTINGS; continue; }
 		if (line == "[TEXTURES]") { section = GAME_FILE_SECTION_TEXTURES; continue; }
 		if (line == "[SCENES]") { section = GAME_FILE_SECTION_SCENES; continue; }
-		if (line[0] == '[') 
-		{ 
-			section = GAME_FILE_SECTION_UNKNOWN; 
+		if (line[0] == '[')
+		{
+			section = GAME_FILE_SECTION_UNKNOWN;
 			DebugOut(L"[ERROR] Unknown section: %s\n", ToLPCWSTR(line));
-			continue; 
+			continue;
 		}
 
 		//
@@ -505,30 +521,85 @@ void CGame::Load(LPCWSTR gameFile)
 
 	DebugOut(L"[INFO] Loading game file : %s has been loaded successfully\n", gameFile);
 
-	SwitchScene();
+	SwitchScene(current_scene);
 }
 
-void CGame::SwitchScene()
+
+void CGame::SwitchScene(int scene_id)
 {
-	if (next_scene < 0 || next_scene == current_scene) return; 
+	DebugOut(L"[INFO] Switching to scene %d\n", scene_id);
 
-	DebugOut(L"[INFO] Switching to scene %d\n", next_scene);
-
+	//if (dynamic_cast<CPlayScene*>(scenes[current_scene]))
+	//	((CPlayScene*)scenes[current_scene])->BackUpPlayer();
 	scenes[current_scene]->Unload();
 
-	CSprites::GetInstance()->Clear();
+	//CTextures::GetInstance()->Clear();
+	//CSprites::GetInstance()->Clear();
 	CAnimations::GetInstance()->Clear();
+	CAnimationSets::GetInstance()->Clear();
 
-	current_scene = next_scene;
-	LPSCENE s = scenes[next_scene];
-	this->SetKeyHandler(s->GetKeyEventHandler());
+	current_scene = scene_id;
+	LPSCENE s = scenes[scene_id];
+	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
 	s->Load();
+	//if (dynamic_cast<CPlayScene*>(scenes[current_scene]))
+	//	((CPlayScene*)scenes[current_scene])->LoadBackUp();
 }
 
-void CGame::InitiateSwitchScene(int scene_id)
-{
-	next_scene = scene_id;
+
+void CGame::SwitchBackScene(int scene_id, float start_x, float start_y) {
+	DebugOut(L"[INFO] SwitchBack to scene %d %d %d\n", scene_id, start_x, start_y);
+	pre_scene = current_scene;
+	current_scene = scene_id;
+	LPSCENE s = scenes[scene_id];
+	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
+
+	CMario* omario = ((CPlayScene*)scenes[pre_scene])->GetPlayer();
+	omario->SetPosition(start_x, start_y);
+	((CPlayScene*)s)->SetPlayer(omario);
+	((CPlayScene*)s)->GetPlayer()->isSwitchMap = false;
+	((CPlayScene*)s)->GetPlayer()->StartPipeUp();
+	//set HUD
+	//((CPlayScene*)s)->GetHUD()->SetHUD(((CPlayScene*)scenes[pre_scene])->GetHUD());
+	//((CPlayScene*)s)->GetHUD()->Update(0);
 }
+void CGame::SwitchExtraScene(int scene_id, float start_x, float start_y, bool pipeUp)
+{
+	DebugOut(L"[INFO] SwitchExtraScene to scene %d %d %d\n", scene_id, start_x, start_y);
+
+	bool isHaveToReload = true;
+	if (pre_scene == scene_id)
+		isHaveToReload = false;
+
+	//switch scene
+	pre_scene = current_scene;
+	current_scene = scene_id;
+	LPSCENE s = scenes[scene_id];
+	CGame::GetInstance()->SetKeyHandler(s->GetKeyEventHandler());
+
+	//put player to extrascene
+	CMario* omario = ((CPlayScene*)scenes[pre_scene])->GetPlayer();
+	omario->SetPosition(start_x, start_y);
+	((CPlayScene*)s)->SetPlayer(omario);
+
+	//load extra scene if necessary
+	if (isHaveToReload)
+		s->Load();
+	//((CPlayScene*)s)->GetHUD()->SetHUD(((CPlayScene*)scenes[pre_scene])->GetHUD());
+	//((CPlayScene*)s)->GetHUD()->Update(0);
+	if (pipeUp)
+	{
+		((CPlayScene*)s)->GetPlayer()->isSwitchMap = false;
+		((CPlayScene*)s)->GetPlayer()->StartPipeUp();
+	}
+	else
+	{
+		((CPlayScene*)s)->GetPlayer()->isSwitchMap = false;
+		((CPlayScene*)s)->GetPlayer()->StartPipeDown();
+	}
+
+}
+
 
 
 void CGame::_ParseSection_TEXTURES(string line)
@@ -542,7 +613,6 @@ void CGame::_ParseSection_TEXTURES(string line)
 
 	CTextures::GetInstance()->Add(texID, path.c_str());
 }
-
 
 CGame::~CGame()
 {

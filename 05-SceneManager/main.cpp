@@ -174,7 +174,7 @@ int Run()
 			Update(dt);
 			Render();
 
-			CGame::GetInstance()->SwitchScene();
+			//CGame::GetInstance()->SwitchScene();
 		}
 		else
 			Sleep(tickPerFrame - dt);

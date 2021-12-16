@@ -44,6 +44,7 @@ public:
 	void SetTurnOnCamY(bool isOn) { isTurnOnCamY = isOn; }
 
 	CMario* GetPlayer() { return player; }
+	void SetPlayer(CMario* m) { player = m; }
 
 	void Clear();
 	void PurgeDeletedObjects();

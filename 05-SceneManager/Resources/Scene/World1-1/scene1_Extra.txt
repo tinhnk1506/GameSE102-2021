@@ -1,6 +1,4 @@
 # id	file_path	transparent_color_r	g	b
-[TEXTURES]
-31	Resources\Tilemap\world1-1-1_bank.png	255	255	255
 [TILEMAP DATA]
 Resources\Tilemap\world1-1-1.txt
 # id	left	top	right	bottom	texture_id
@@ -19,9 +17,9 @@ Resources\Tilemap\world1-1-1.txt
 6223	22003	100
 6224	22004	100
 6225	22005	100
-# id	ani1	ani2	ani3
-#
 [ANIMATION_SETS]
+# transparent
+0	0
 # Brick
 426	6221
 120	6222
