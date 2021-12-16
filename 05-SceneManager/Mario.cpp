@@ -30,6 +30,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleFlapping();
 	HandleMarioKicking();
 	HandleSpeedStack();
+	HandleSwitchMap();
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -219,8 +220,8 @@ void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
-	CPortal* p = (CPortal*)e->obj;
-	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+	portal = (CPortal*)e->obj;
+	//CGame::GetInstance()->SwitchExtraScene(portal->GetSceneId(), portal->start_x, portal->start_y, portal->pipeUp);
 }
 
 void CMario::OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e)
@@ -828,6 +829,48 @@ void CMario::SetLevel(int l)
 	level = l;
 }
 
+void CMario::HandleSwitchMap() {
+	if (pipeDownTimer > MARIO_PIPE_TIME && isPipeDown)
+	{
+		StopPipeDown();
+		if (isSwitchMap)
+		{
+			StopPipeDown();
+			CGame::GetInstance()->SwitchExtraScene(portal->GetSceneId(), portal->start_x, portal->start_y, portal->pipeUp);
+		}
+		else if (isSwitchMap && isBackScene)
+		{
+			CGame::GetInstance()->SwitchBackScene(portal->GetSceneId(), portal->start_x, portal->start_y);
+			isBackScene = false;
+		}
+		else
+		{
+			vx = vy = 0;
+			ay = MARIO_GRAVITY;
+		}
+
+	}
+
+	else if (pipeUpTimer > MARIO_PIPE_TIME && isPipeUp)
+	{
+		StopPipeUp();
+		if (isSwitchMap)
+		{
+			CGame::GetInstance()->SwitchExtraScene(portal->GetSceneId(), portal->start_x, portal->start_y, portal->pipeUp);
+		}
+		else if (isSwitchMap && isBackScene)
+		{
+			CGame::GetInstance()->SwitchBackScene(portal->GetSceneId(), portal->start_x, portal->start_y);
+			isBackScene = false;
+		}
+		else
+		{
+			vx = vy = 0;
+			ay = MARIO_GRAVITY;
+		}
+	}
+}
+
 void CMario::HandleMarioJump() {
 	if (isJumping) {
 		//DebugOut(L"ax::%f\n", 0.0f);
@@ -879,7 +922,7 @@ void CMario::HandleBasicMarioDie() {
 	{
 		level = MARIO_LEVEL_SMALL;
 		StartUntouchable();
-		DebugOut(L">>> Mario DIE >>>%f \n", level);
+		DebugOut(L">>> Mario SMALL >>>%f \n", level);
 	}
 	else
 	{
@@ -895,14 +938,14 @@ void CMario::HandleSpeedStack() {
 		DebugOut(L"HandleSpeedStack::%d\n", speedStack);
 		if (speedStack > MARIO_RUNNING_STACKS) {
 			speedStack = MARIO_RUNNING_STACKS;
-			//isReadyToFly = true;
+			//isFlying = true;
 		}
 	}
 	if (GetTickCount64() - running_stop > MARIO_SPEED_STACK_LOST_TIME && !isRunning)
 	{
 		running_stop = GetTickCount64();
 		speedStack--;
-		//isReadyToFly = false;
+		//isFlying = false;
 		if (speedStack < 0)
 		{
 			speedStack = 0;
@@ -1005,3 +1048,4 @@ void CMario::HandleMarioKicking() {
 		}
 	}
 }
+

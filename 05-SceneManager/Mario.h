@@ -3,6 +3,7 @@
 #include "Animations.h"
 #include "GameObject.h"
 #include "Tail.h"
+#include "Portal.h"
 
 #define MARIO_WALKING_SPEED_START	0.0001f 
 #define MARIO_WALKING_SPEED_MAX		0.15f
@@ -346,6 +347,8 @@ class CMario : public CGameObject
 	ULONGLONG start_speed_stack;
 	ULONGLONG start_running;
 	ULONGLONG running_stop;
+	ULONGLONG pipeUpTimer;
+	ULONGLONG pipeDownTimer;
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -370,6 +373,8 @@ public:
 	int coin = 0;
 	int marioLife = 4;
 	int speedStack = 0;
+	// switch map
+	CPortal* portal = NULL;
 
 	float ay;				// acceleration on y 
 	float ax;				// acceleration on x 
@@ -387,6 +392,10 @@ public:
 	BOOLEAN isFlying = false;
 	BOOLEAN isSitting;
 	BOOLEAN isFlapping = false;
+	BOOLEAN isPipeUp = false;
+	BOOLEAN isPipeDown = false;
+	BOOLEAN isSwitchMap = false;
+	BOOLEAN isBackScene = false;
 
 	BOOLEAN isTailFlying = false;
 	BOOLEAN isFlappingTailFlying = false;
@@ -422,7 +431,7 @@ public:
 		return (state != MARIO_STATE_DIE);
 	}
 
-	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0); }
+	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable == 0 && isPipeDown && isPipeUp); }
 
 	void OnNoCollision(DWORD dt);
 	void OnNoCollistionY(DWORD dt) { y += vy * dt; };
@@ -440,6 +449,7 @@ public:
 	void HandleMarioKicking();
 	void HandleChangeDirection();
 	void HandleSpeedStack();
+	void HandleSwitchMap();
 	//END HANDLE
 
 	void SetLevel(int l);
@@ -459,16 +469,29 @@ public:
 		start_transform = GetTickCount64();
 		SetLevel(level);
 	}
-	void StartRunning() { start_running = GetTickCount64(); }
-	void StartSpeedStack() { start_speed_stack = GetTickCount64(); }
+	void StartPipeUp() {
+		pipeUpTimer = GetTickCount64();
+		isPipeUp = true;
 
+	}
+	void StartPipeDown() {
+		pipeDownTimer = GetTickCount64();
+		isPipeDown = true;
+	}
 	//END START
 
 
 	//STOP
 	void StopTransform() { isTransforming = false; start_transform = 0; /*isChangingY = false;*/ }
 	void StopKicking() { start_kicking = 0; isKick = false; }
-	void StopSpeedStack() { start_speed_stack = 0; }
+	void StopPipeUp() {
+		pipeUpTimer = 0;
+		isPipeUp = false;
+	}
+	void StopPipeDown() {
+		pipeDownTimer = 0;
+		isPipeDown = false;
+	}
 	//END STOP
 
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
@@ -487,4 +510,7 @@ public:
 
 	//GET
 	boolean getIsOnPlatForm() { return isOnPlatform; }
+
+	//travel to secret map
+	void Travel() { x = 2275; y = 0; };
 };
