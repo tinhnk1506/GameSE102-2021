@@ -6,12 +6,14 @@
 
 #define HUD_DIFF_FIRST_ROW		8
 #define HUD_DIFF_SECOND_ROW		16
+#define HUD_DIFF_ROW			4	
 #define HUD_DIFF_PLAYER			110
 #define HUD_DIFF_TIME			5
 #define HUD_DIFF_MONEY			12
 #define HUD_DIFF_LIFE			93
 #define HUD_DIFF_SCORE			60
-#define HUD_DIFF_P				107
+#define HUD_DIFF_METTER			68
+#define HUD_DIFF_P				15
 #define HUD_DIFF_CARD			172
 
 #define HUD_TIME_MAX	3
@@ -123,25 +125,23 @@ void HUD::Render() {
 	CSprites::GetInstance()->Get(SPRITE_HUD_ID)->Draw(x, y);
 	playerSprite->Draw(x - HUD_DIFF_PLAYER, y + 4);
 	for (unsigned int i = 0; i < remainTimeSprites.size(); i++)
-		remainTimeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_TIME, y + 4);
+		remainTimeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_TIME, y + HUD_DIFF_ROW);
 	for (unsigned int i = 0; i < moneySprites.size(); i++)
-		moneySprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_MONEY, y - 5);
+		moneySprites[i]->Draw(x + FONT_BBOX_WIDTH * i + HUD_DIFF_MONEY, y - HUD_DIFF_ROW);
 	for (unsigned int i = 0; i < lifeSprites.size(); i++)
-		lifeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i - HUD_DIFF_LIFE, y + 4);
+		lifeSprites[i]->Draw(x + FONT_BBOX_WIDTH * i - HUD_DIFF_LIFE, y + HUD_DIFF_ROW);
 	for (unsigned int i = 0; i < scoreSprites.size(); i++) {
-		scoreSprites[i]->Draw(x + FONT_BBOX_WIDTH * i - HUD_DIFF_SCORE - 7, y + 4);
+		scoreSprites[i]->Draw(x + FONT_BBOX_WIDTH * i - HUD_DIFF_SCORE - 7, y + HUD_DIFF_ROW);
 	}
 
 	for (int i = 1; i <= speedStack; i++) {
 		if (i == MARIO_RUNNING_STACKS) {
-			DebugOut(L"MARIO_RUNNING_STACKS MAX%d::>>", i);
 			if (PAni != nullptr)
-				PAni->Render(x + HUD_DIFF_P, y + HUD_DIFF_FIRST_ROW);
+				PAni->Render(x - HUD_DIFF_P, y - HUD_DIFF_ROW);
 		}
 		else
 		{
-			DebugOut(L"MARIO_RUNNING_STACKS  %d::>>", i);
-			powerMelterSprite[i - 1]->Draw(x + FONT_BBOX_WIDTH * (i - 1) + HUD_DIFF_SCORE, y + HUD_DIFF_FIRST_ROW);
+			powerMelterSprite[i - 1]->Draw(x + FONT_BBOX_WIDTH * (i - 1) - HUD_DIFF_METTER, y - 5);
 		}
 	}
 	RenderCard();

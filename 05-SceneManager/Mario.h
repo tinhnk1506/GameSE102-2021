@@ -8,6 +8,7 @@
 #define MARIO_WALKING_SPEED_MAX		0.15f
 #define MARIO_RUNNING_SPEED_MAX		0.2f
 #define MARIO_SPEED_MAX				0.25f
+#define MARIO_SPEED_STACK			0.15f
 #define MARIO_ACCELERATION			0.0007f
 #define MARIO_WALKING_SPEED_MIN		0.05f
 
@@ -330,6 +331,7 @@ class CMario : public CGameObject
 	bool isRunning = false;
 	bool isReadyToRun = false;
 	int runningStack;
+	int direction;
 
 
 	ULONGLONG untouchable_start;
@@ -376,6 +378,7 @@ public:
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;
 	BOOLEAN isKick;
+	BOOLEAN isChangeDirection = false;
 	BOOLEAN isBangAni = false;
 	BOOLEAN isTransforming = false;
 	BOOLEAN normalFlyPullDown = false;
@@ -435,10 +438,14 @@ public:
 	void HandleTurning();
 	void HandleFlapping();
 	void HandleMarioKicking();
+	void HandleChangeDirection();
 	void HandleSpeedStack();
 	//END HANDLE
 
 	void SetLevel(int l);
+	void SetDirection(int direct) { nx = direct; }
+	void SetIsReadyToRun(bool run) { isReadyToRun = run; }
+	bool GetIsReadyToRun() { return isReadyToRun; }
 
 	//START
 	void StartTurning() { start_turning_state = GetTickCount64(); isTuring = true; }
