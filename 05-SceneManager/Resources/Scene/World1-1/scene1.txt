@@ -15,13 +15,13 @@ Resources\Tilemap\world1-1.txt
  ---- icon Lugi ---- 
 50004	15	170	33	179	80
  ---- PowerMelter filled arrow ---- 
-50005	64	162	72	170	80
+50005	64	162	71	168	80
  ---- powerMelter filled iconP ---- 
-50006	73	162	88	170	80
+50006	73	162	87	168	80
  ---- powerMelter empty arrow ---- 
-50007	90	162	99	170	80
+50007	92	163	97	167	80
  ---- powerMelter empty icon ---- 
-50008	99	162	116	170	80
+50008	101	162	113	168	80
  ---- empty card ---- 
 50009	160	158	183	186	80
  ---- mushroom card ---- 

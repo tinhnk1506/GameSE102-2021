@@ -29,6 +29,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleTurning();
 	HandleFlapping();
 	HandleMarioKicking();
+	HandleSpeedStack();
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -687,12 +688,28 @@ void CMario::SetState(int state)
 		maxVx = MARIO_RUNNING_SPEED;
 		ax = MARIO_ACCEL_RUN_X;
 		nx = 1;
+		isReadyToRun = true;
+		runningStack++;
+		if (vx > MARIO_SPEED_STACK && isReadyToRun) {
+			isRunning = true;
+		}
+		else {
+			isRunning = false;
+		}
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
 		if (isSitting) break;
 		maxVx = -MARIO_RUNNING_SPEED;
 		ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
+		isReadyToRun = true;
+		runningStack++;
+		if (vx > MARIO_SPEED_STACK && isReadyToRun) {
+			isRunning = true;
+		}
+		else {
+			isRunning = false;
+		}
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
@@ -875,6 +892,7 @@ void CMario::HandleSpeedStack() {
 	if (GetTickCount64() - start_running > MARIO_RUNNING_STACK_TIME && isRunning && vx != 0 && isReadyToRun) {
 		start_running = GetTickCount64();
 		speedStack++;
+		DebugOut(L"HandleSpeedStack::%d\n", speedStack);
 		if (speedStack > MARIO_RUNNING_STACKS) {
 			speedStack = MARIO_RUNNING_STACKS;
 			//isReadyToFly = true;
@@ -963,6 +981,14 @@ void CMario::HandleTurning() {
 		turningStack = 0;
 	}
 
+}
+
+void CMario::HandleChangeDirection() {
+	if (isChangeDirection && runningStack > 15) {
+		runningStack = 0;
+		isChangeDirection = false;
+		vx = 0;
+	}
 }
 
 void CMario::HandleFlapping() {

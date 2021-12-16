@@ -68,6 +68,7 @@ void CSampleKeyHandler::OnKeyUp(int KeyCode)
 			mario->isReadyToHold = false;
 			mario->isHolding = false;
 			mario->SetState(MARIO_STATE_KICK);
+			mario->SetIsReadyToRun(false);
 		}
 		break;
 	case DIK_DOWN:
