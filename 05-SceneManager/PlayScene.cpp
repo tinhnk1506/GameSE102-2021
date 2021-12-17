@@ -16,6 +16,7 @@
 #include "BreakableBrick.h"
 #include "PiranhaPlantFire.h"
 #include "HUD.h"
+#include "Card.h"
 
 
 using namespace std;
@@ -278,9 +279,7 @@ void CPlayScene::LoadObjects(LPCWSTR assetFile)
 			obj = new CCoin(tag);
 			break;
 		case OBJECT_TYPE_CARD:
-			//obj = new CCard();
-			obj = new CBrick();
-
+			obj = new CardItem();
 			break;
 		case OBJECT_TYPE_PORTAL:
 		{
