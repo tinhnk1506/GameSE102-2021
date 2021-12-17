@@ -30,6 +30,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleTurning();
 	HandleFlapping();
 	HandleMarioKicking();
+	HandleChangeDirection();
 	HandleSpeedStack();
 	HandleSwitchMap();
 
@@ -160,7 +161,7 @@ void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithFireBullet(LPCOLLISIONEVENT e) {
 	e->obj->Delete();
-	//HandleBasicMarioDie();
+	HandleBasicMarioDie();
 }
 
 void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
@@ -168,9 +169,9 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 	CLeaf* leaf = dynamic_cast<CLeaf*>(e->obj);
 	if (e->ny != 0 || e->nx != 0) {
 		if (level != MARIO_LEVEL_TAIL) StartTransform(MARIO_LEVEL_TAIL);
-		//leaf->SetAppear(false);
+		leaf->SetAppear(false);
 		//leaf->SetIsDestroyed(true);
-		//leaf->vy = 50.0f;
+		leaf->vy = 50.0f;
 		//AddScore(this->x, this->y, 1000);
 		e->obj->Delete();
 	}
@@ -680,7 +681,8 @@ void CMario::Render()
 					CSprites::GetInstance()->Get(MARIO_SPRITE_WHACK_LEFT_4_ID)->Draw(x, y);
 			}
 		}
-		else animation_set->at(aniId)->Render(nx > 0 ? x - 3 : x + 3, y);
+
+		else animation_set->at(aniId)->Render(nx > 0 ? x - MARIO_DIFF : x + MARIO_DIFF, y);
 		this->tail->Render();
 	}
 	else {
@@ -703,12 +705,13 @@ void CMario::SetState(int state)
 		ax = MARIO_ACCEL_RUN_X;
 		nx = 1;
 		isReadyToRun = true;
-		runningStack++;
+		//runningStack++;
 		if (vx > MARIO_SPEED_STACK && isReadyToRun) {
 			isRunning = true;
 		}
 		else {
 			isRunning = false;
+
 		}
 		break;
 	case MARIO_STATE_RUNNING_LEFT:
@@ -717,25 +720,42 @@ void CMario::SetState(int state)
 		ax = -MARIO_ACCEL_RUN_X;
 		nx = -1;
 		isReadyToRun = true;
-		runningStack++;
+		//runningStack++;
 		if (vx > MARIO_SPEED_STACK && isReadyToRun) {
 			isRunning = true;
 		}
 		else {
 			isRunning = false;
+
 		}
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
 		if (isSitting) break;
 		maxVx = MARIO_WALKING_SPEED;
 		ax = MARIO_ACCEL_WALK_X;
+		isRunning = false;
 		nx = 1;
+		if (ax < 0 && abs(vx) > MARIO_WALKING_SPEED_START) {
+			isChangeDirection = true;
+			runningStack = 0;
+		}
+		else {
+			runningStack++;
+		}
 		break;
 	case MARIO_STATE_WALKING_LEFT:
 		if (isSitting) break;
 		maxVx = -MARIO_WALKING_SPEED;
 		ax = -MARIO_ACCEL_WALK_X;
+		isRunning = false;
 		nx = -1;
+		if (ax > 0 && abs(vx) > MARIO_WALKING_SPEED_START) {
+			isChangeDirection = true;
+			runningStack = 0;
+		}
+		else {
+			runningStack++;
+		}
 		break;
 	case MARIO_STATE_JUMP:
 		if (isSitting) break;
