@@ -360,7 +360,7 @@ class CMario : public CGameObject
 	void OnCollisionWithLeaf(LPCOLLISIONEVENT e);
 	void OnCollisionWithFireBullet(LPCOLLISIONEVENT e);
 	void OnCollisionWithPSwitch(LPCOLLISIONEVENT e);
-
+	void OnCollisionWithPCardItem(LPCOLLISIONEVENT e);
 	int GetAniIdBig();
 	int GetAniIdSmall();
 	int GetAniIdTail();
@@ -406,6 +406,16 @@ public:
 	int turningStack = 0;
 
 	CTail* tail;
+
+	//CARD
+	vector<int> cards;
+
+	//HUD
+	void AddScore(float x, float y, int score, bool isStack = true);
+	void AddCoin() { this->coin++; }
+	void AddCard(int cardId) { cards.push_back(cardId); }
+	void AddMarioLife(int life) { marioLife += life; }
+
 	CMario(float x, float y)
 	{
 		isSitting = false;
