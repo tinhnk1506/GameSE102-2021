@@ -286,6 +286,8 @@
 #define MARIO_BBOX_SIT_HEIGHT	18
 #define MARIO_SIT_HEIGHT_ADJUST	0.4f
 
+#define MARIO_DIFF	3
+
 
 #endif // !MARIO_BBOX
 

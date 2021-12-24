@@ -14,7 +14,7 @@
 #define HUD_DIFF_SCORE			60
 #define HUD_DIFF_METTER			68
 #define HUD_DIFF_P				15
-#define HUD_DIFF_CARD			172
+#define HUD_DIFF_CARD			48
 
 #define HUD_TIME_MAX	3
 #define HUD_SCORE_MAX	7
@@ -200,19 +200,19 @@ void HUD::AddCard() {
 	if (mario != NULL) {
 		cards.clear();
 		if (mario != NULL) {
-			/*	if (mario->cards.size() > 0) {
-					for (int i = 0; i < mario->cards.size(); i++) {
-						int index = mario->cards[i];
-						cards.push_back(index);
-						if (startTakingCard == 0) {
-							isTakingCard = true;
-							startTakingCard = GetTickCount64();
-						}
-						if (GetTickCount64() - startTakingCard > 1000) {
-							isTakingCard = false;
-						}
+			if (mario->cards.size() > 0) {
+				for (int i = 0; i < mario->cards.size(); i++) {
+					int index = mario->cards[i];
+					cards.push_back(index);
+					if (startTakingCard == 0) {
+						isTakingCard = true;
+						startTakingCard = GetTickCount64();
 					}
-				}*/
+					if (GetTickCount64() - startTakingCard > 1000) {
+						isTakingCard = false;
+					}
+				}
+			}
 		}
 	}
 }
@@ -226,7 +226,7 @@ void HUD::RenderCard() {
 				index = cards[i] + 3;
 			}
 			else index = cards[i];
-			TakenCards->at(index)->Render(x + HUD_DIFF_CARD + i * 24, y + HUD_DIFF_SECOND_ROW - HUD_DIFF_FIRST_ROW);
+			TakenCards->at(index)->Render(x + HUD_DIFF_CARD + i * 24, y);
 		}
 	}
 }
