@@ -65,10 +65,6 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 			Delete();
 		}
 	}
-
-
-
-
 }
 
 void CCoin::SetState(int state) {

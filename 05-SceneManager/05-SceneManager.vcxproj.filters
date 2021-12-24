@@ -169,9 +169,6 @@
     <ClCompile Include="Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Grid</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animations.h">
@@ -275,9 +272,6 @@
     </ClInclude>
     <ClInclude Include="Point.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Grid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
