@@ -5,6 +5,7 @@
 #include "BreakableBrick.h"
 #include "QuestionBrick.h"
 #include "debug.h"
+#include "Mario.h"
 
 CKoopas::CKoopas(int tag)
 {
@@ -109,6 +110,10 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 			if (!dynamic_cast<CBlock*>(e->obj)) {
 				vx = -vx;
 				nx = -nx;
+			}
+			else {
+				CBlock* block = dynamic_cast<CBlock*>(e->obj);
+				block->SetIsBlocking(0);
 			}
 		}
 	}
@@ -218,6 +223,7 @@ void CKoopas::OnCollisionWithBlock(LPCOLLISIONEVENT e) {
 		if (state == KOOPAS_STATE_SHELL_UP && e->ny > 0)
 			y += vy * this->dt;
 	}
+
 }
 
 void CKoopas::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
