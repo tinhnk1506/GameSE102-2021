@@ -15,6 +15,9 @@
 #include "PiranhaPlant.h"
 #include "Switch.h"
 #include "Card.h"
+#include "PlayScene.h"
+#include "Point.h"
+
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
@@ -33,6 +36,11 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleChangeDirection();
 	HandleSpeedStack();
 	HandleSwitchMap();
+
+	if (GetTickCount64() - start_score_time >= STACK_SCORE_TIME && isStackingScore) {
+		isStackingScore = false;
+		stackScoreTimes = 0;
+	}
 
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
@@ -156,6 +164,7 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
+	AddCoin();
 	coin++;
 }
 
@@ -172,7 +181,7 @@ void CMario::OnCollisionWithLeaf(LPCOLLISIONEVENT e)
 		leaf->SetAppear(false);
 		//leaf->SetIsDestroyed(true);
 		leaf->vy = 50.0f;
-		//AddScore(this->x, this->y, 1000);
+		AddScore(this->x, this->y, 1000);
 		e->obj->Delete();
 	}
 }
@@ -220,7 +229,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 		else if (koopas->GetState() == KOOPAS_STATE_SPINNING) {
 			koopas->SetState(KOOPAS_STATE_IN_SHELL);
 		}
-		//AddScore(this->x, this->y, 100);
+		AddScore(this->x, this->y, 100);
 	}
 
 
@@ -1043,6 +1052,40 @@ void CMario::HandleTransform(int level) {
 		}
 	}
 }
+
+
+void CMario::AddScore(float x, float y, int score, bool isStack) {
+	CPlayScene* currentScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+
+	start_score_time = GetTickCount64();
+
+	if (isStack) {
+		if (!isStackingScore) {
+			isStackingScore = true;
+		}
+		else {
+			if (stackScoreTimes == 5) {
+				score *= 10;
+				stackScoreTimes = 5;
+			}
+			else {
+				score = score * pow(2, stackScoreTimes);
+			}
+		}
+
+		stackScoreTimes++;
+	}
+
+	Point* point = new Point(score);
+	int previousScore = score;
+
+	point->SetPosition(x, y);
+	currentScene->AddObject(point);
+
+	this->marioScore += score;
+
+}
+
 
 void CMario::HandleTurning() {
 

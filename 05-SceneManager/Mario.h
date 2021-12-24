@@ -5,6 +5,7 @@
 #include "Tail.h"
 #include "Portal.h"
 
+#define STACK_SCORE_TIME	2000
 #define MARIO_WALKING_SPEED_START	0.0001f 
 #define MARIO_WALKING_SPEED_MAX		0.15f
 #define MARIO_RUNNING_SPEED_MAX		0.2f
@@ -335,7 +336,7 @@ class CMario : public CGameObject
 	bool isReadyToRun = false;
 	int runningStack;
 	int direction;
-
+	int stackScoreTimes = 0;
 
 	ULONGLONG untouchable_start;
 
@@ -351,6 +352,7 @@ class CMario : public CGameObject
 	ULONGLONG running_stop;
 	ULONGLONG pipeUpTimer;
 	ULONGLONG pipeDownTimer;
+	ULONGLONG start_score_time;
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -381,6 +383,7 @@ public:
 	float ay;				// acceleration on y 
 	float ax;				// acceleration on x 
 
+	BOOLEAN isStackingScore = false;
 	BOOLEAN isOnPlatform;
 	BOOLEAN isHolding;
 	BOOLEAN isReadyToHold;

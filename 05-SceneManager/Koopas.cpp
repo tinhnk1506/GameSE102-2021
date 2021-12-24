@@ -223,12 +223,13 @@ void CKoopas::OnCollisionWithBlock(LPCOLLISIONEVENT e) {
 void CKoopas::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 
 	CKoopas* koopas = dynamic_cast<CKoopas*>(e->obj);
+	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (koopas->state == KOOPAS_STATE_SPINNING)
 	{
 		if (koopas->tag == KOOPAS_GREEN_PARA)
 			koopas->tag = KOOPAS_GREEN;
 		SetState(KOOPAS_STATE_DEATH);
-		//mario->AddScore(x, y, 100, true);
+		mario->AddScore(x, y, 100, true);
 	}
 	else
 	{
