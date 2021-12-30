@@ -74,7 +74,7 @@ public:
 	void StartDying() { dying_start = GetTickCount64(); }
 	void Reset();
 	bool CalTurnable(LPGAMEOBJECT object);
-	void CalRevivable();
+	//void CalRevivable();
 	void HandleBeingHeld(LPGAMEOBJECT player);
 
 	virtual int IsCollidable() { return 1; };
@@ -89,8 +89,8 @@ public:
 	void OnCollisionWithQuestionBrick(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
-	void OncollisionWithBreakableBrick(LPCOLLISIONEVENT e);
+	//void OncollisionWithBreakableBrick(LPCOLLISIONEVENT e);
 
-	//void OnCollisionWithPlan(LPCOLLISIONEVENT e);
+	void OnCollisionWithPlan(LPCOLLISIONEVENT e);
 
 };

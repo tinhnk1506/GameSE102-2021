@@ -6,6 +6,8 @@
 #include "QuestionBrick.h"
 #include "debug.h"
 #include "Mario.h"
+#include "PiranhaPlant.h"
+#include "PiranhaPlantFire.h"
 
 CKoopas::CKoopas(int tag)
 {
@@ -64,33 +66,39 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 			vy += KOOPAS_GRAVITY * dt;
 	}
 
-	//if (!mario->isHolding && isBeingHeld)
-	//{
-	//	isBeingHeld = false;
-	//	if ((state == KOOPAS_STATE_IN_SHELL || state == KOOPAS_STATE_SHELL_UP) && !isBeingHeld)
-	//	{
-	//		nx = mario->nx;
-	//		SetState(KOOPAS_STATE_SPINNING);
-	//	}
-	//}
-	if (isBeingHeld)
-	{
-		y = mario->getY() - 3; //TODO change const number
-		vy = 0;
-		int tmp = (int)mario->nx;
-		x = mario->getX() + tmp * (MARIO_BIG_BBOX_WIDTH);
-		if (mario->GetLevel() == MARIO_LEVEL_SMALL)
-		{
-			if (tmp > 0)
-				x = mario->getX() + tmp * (MARIO_SMALL_BBOX_WIDTH);
-			else
-				x = mario->getX() + tmp * (KOOPAS_BBOX_WIDTH);
-			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT);
-		}
-	}
+	HandleBeingHeld(mario);
 
 	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void CKoopas::HandleBeingHeld(LPGAMEOBJECT player) {
+
+	CMario* mario = dynamic_cast<CMario*>(player);
+
+	if (isBeingHeld && mario->isHolding) {
+		if (state == KOOPAS_STATE_IN_SHELL || state == KOOPAS_STATE_SHELL_UP) {
+			if (mario->nx > 0) {
+				x = mario->x + MARIO_BIG_BBOX_WIDTH * mario->nx - 3.0f;
+			}
+			else x = mario->x + MARIO_BIG_BBOX_WIDTH * mario->nx;
+			if (mario->GetLevel() != MARIO_LEVEL_SMALL) {
+				y = mario->y - 2.0f;
+			}
+			else {
+				y = mario->y - 2.0f;
+			}
+			vy = 0;
+		}
+	}
+	else if (isBeingHeld && !mario->isHolding) {
+		if (state == KOOPAS_STATE_SHELL_UP || state == KOOPAS_STATE_IN_SHELL) {
+			this->nx = mario->nx;
+			isBeingHeld = false;
+			//mario->StartKicking();
+			SetState(KOOPAS_STATE_SPINNING);
+		}
+	}
 }
 
 void CKoopas::OnNoCollision(DWORD dt) {
@@ -103,6 +111,7 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 	{
 		vy = 0;
 	}
+
 	else
 	{
 		if (e->nx != 0 && e->obj->IsBlocking())
@@ -117,6 +126,7 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 			}
 		}
 	}
+
 	if (dynamic_cast<CBrick*>(e->obj))
 		OnCollisionWithBrick(e);
 	if (dynamic_cast<CBlock*>(e->obj))
@@ -129,6 +139,26 @@ void CKoopas::OnCollisionWith(LPCOLLISIONEVENT e) {
 		OnCollisionWithKoopas(e);
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
+	if (dynamic_cast<PiranhaPlant*>(e->obj) || dynamic_cast<PiranhaPlantFire*>(e->obj))
+		OnCollisionWithPlan(e);
+	//if (dynamic_cast<PiranhaPlantFire*>(e->obj))
+	//	OnCollisionWithPlan(e);
+}
+
+void CKoopas::OnCollisionWithPlan(LPCOLLISIONEVENT e) {
+
+	PiranhaPlant* piranhaPlant = dynamic_cast<PiranhaPlant*>(e->obj);
+	PiranhaPlantFire* piranhaPlantFire = dynamic_cast<PiranhaPlantFire*>(e->obj);
+
+	if ((piranhaPlant->GetState() != PIRANHAPLANT_STATE_DEATH ||
+		piranhaPlantFire->GetState() != PIRANHAPLANT_STATE_DEATH) &&
+		this->GetState() == KOOPAS_STATE_SPINNING)
+	{
+		piranhaPlant->SetState(PIRANHAPLANT_STATE_DEATH);
+		piranhaPlantFire->SetState(PIRANHAPLANT_STATE_DEATH);
+
+	}
+
 }
 
 void CKoopas::OnCollisionWithBreakableBrick(LPCOLLISIONEVENT e) {
@@ -258,7 +288,7 @@ void CKoopas::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 void CKoopas::OnCollisionWithGoomba(LPCOLLISIONEVENT e) {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
-	if (goomba->GetState() != GOOMBA_STATE_DIE && this->GetState() == KOOPAS_STATE_SPINNING)
+	if (this->GetState() == KOOPAS_STATE_SPINNING)
 	{
 		goomba->SetState(GOOMBA_STATE_DIE);
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
