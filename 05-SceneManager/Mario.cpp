@@ -1075,7 +1075,7 @@ void CMario::AddScore(float x, float y, int score, bool isStack) {
 				stackScoreTimes = 5;
 			}
 			else {
-				score = score * pow(2, stackScoreTimes);
+				score = score * (int)(pow(2, stackScoreTimes));
 			}
 		}
 

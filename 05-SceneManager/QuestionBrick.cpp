@@ -12,6 +12,7 @@ QuestionBrick::QuestionBrick(int tag, int type) : CGameObject() {
 	state = QUESTION_BRICK_NORMAL;
 	this->tag = tag;
 	this->type = type;
+	this->item = NULL;
 }
 
 void QuestionBrick::Render() {

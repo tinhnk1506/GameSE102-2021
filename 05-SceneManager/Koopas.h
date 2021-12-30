@@ -54,7 +54,7 @@ class CKoopas : public CGameObject
 	ULONGLONG dying_start = 0;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
-	ULONGLONG dt;
+	ULONGLONG dt = 0;
 public:
 
 	bool isBeingHeld = false;

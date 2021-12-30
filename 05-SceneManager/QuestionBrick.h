@@ -32,19 +32,19 @@
 class QuestionBrick :public CGameObject
 {
 	LPGAMEOBJECT item;
+	//vector<LPGAMEOBJECT>* items;
 	bool isBeingPushedUp = false;
 	bool isFallingDown = false;
 	int totalItems = 1;
-	vector<LPGAMEOBJECT>* items;
 	int tag;
 	int type;
 public:
 	CGameObject* obj = NULL;
 	QuestionBrick(int tag = ITEM_COIN_QUESTION_BRICK_COIN, int type = QUESTIONBRICK_TYPE_MARK);
-	
+
 	virtual int IsCollidable() { return 1; };
 	virtual int IsBlocking() { return 1; }
-	
+
 	virtual void Render();
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);

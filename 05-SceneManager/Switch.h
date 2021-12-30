@@ -19,7 +19,7 @@ class Switch :public CGameObject
 {
 	bool isAppear = false;
 public:
-	float start_y;
+	float start_y = 0;
 	virtual void Render();
 	bool GetIsAppear() { return isAppear; }
 	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
