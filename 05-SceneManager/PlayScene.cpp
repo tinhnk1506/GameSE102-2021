@@ -33,6 +33,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath) :
 #define	INTROSCENE	0
 #define	WORLDSCENE	1
 #define	PLAYSCENE	2
+#define CAMERA		60
 
 #define SCENE_SECTION_UNKNOWN		   -1
 #define SCENE_SECTION_TEXTURES			2
@@ -413,8 +414,9 @@ void CPlayScene::Update(DWORD dt)
 	if (player == NULL) return;
 	// Update camera to follow mario
 	float cx, cy;
+
 	player->GetPosition(cx, cy);
-	SetCam(cx, cy, dt);
+	SetCam(cx, cy + CAMERA, dt);
 	hud->Update(dt, &coObjects);
 
 	PurgeDeletedObjects();

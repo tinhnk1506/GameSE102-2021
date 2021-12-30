@@ -733,12 +733,11 @@ void CMario::SetState(int state)
 		nx = -1;
 		isReadyToRun = true;
 		//runningStack++;
-		if (vx > MARIO_SPEED_STACK && isReadyToRun) {
+		if (vx < MARIO_SPEED_STACK && isReadyToRun) {
 			isRunning = true;
 		}
 		else {
 			isRunning = false;
-
 		}
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
