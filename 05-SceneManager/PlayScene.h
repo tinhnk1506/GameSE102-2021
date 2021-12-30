@@ -31,9 +31,6 @@ protected:
 
 public:
 	bool isTurnOnCamY = false;
-	bool isGameDone1 = false;
-	bool isGameDone2 = false;
-	bool isGameDone3 = false;
 	CPlayScene(int id, LPCWSTR filePath);
 
 	virtual void Load();

@@ -36,6 +36,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleChangeDirection();
 	HandleSpeedStack();
 	HandleSwitchMap();
+	HandleFinishScene();
 
 	if (GetTickCount64() - start_score_time >= STACK_SCORE_TIME && isStackingScore) {
 		isStackingScore = false;
@@ -102,8 +103,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<FireBullet*>(e->obj))
 		OnCollisionWithFireBullet(e);
-	//else if (dynamic_cast<PiranhaPlant*>(e->obj))
-	//	HandleBasicMarioDie();
+	else if (dynamic_cast<PiranhaPlant*>(e->obj))
+		HandleBasicMarioDie();
 	else if (dynamic_cast<Switch*>(e->obj))
 		OnCollisionWithPSwitch(e);
 	else if (dynamic_cast<CardItem*>(e->obj))
@@ -116,7 +117,7 @@ void CMario::OnCollisionWithPCardItem(LPCOLLISIONEVENT e) {
 		card->SetAppear(false);
 		card->isDeleted = true;
 		AddCard(card->state - 1);
-		//isFinish = true;
+		isFinish = true;
 	}
 }
 
@@ -239,6 +240,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
+	AddScore(this->x, this->y, 100);
 	StartTransform(MARIO_LEVEL_BIG);
 }
 
@@ -731,12 +733,11 @@ void CMario::SetState(int state)
 		nx = -1;
 		isReadyToRun = true;
 		//runningStack++;
-		if (vx > MARIO_SPEED_STACK && isReadyToRun) {
+		if (vx < MARIO_SPEED_STACK && isReadyToRun) {
 			isRunning = true;
 		}
 		else {
 			isRunning = false;
-
 		}
 		break;
 	case MARIO_STATE_WALKING_RIGHT:
@@ -961,11 +962,12 @@ void CMario::HandleMarioJump() {
 
 void CMario::HandleBasicMarioDie() {
 
-	if (level > MARIO_LEVEL_SMALL)
+	if (level != MARIO_LEVEL_SMALL)
 	{
-		level = MARIO_LEVEL_SMALL;
+		level -= 1;
+		StartTransform(level);
 		StartUntouchable();
-		DebugOut(L">>> Mario SMALL >>>%f \n", level);
+		DebugOut(L">>> Mario TRANSFORM >>>%d \n", level);
 	}
 	else
 	{
@@ -1087,6 +1089,14 @@ void CMario::AddScore(float x, float y, int score, bool isStack) {
 
 }
 
+void CMario::HandleFinishScene() {
+	if (isFinish) {
+		ax = MARIO_ACCELERATION;
+		ay = MARIO_GRAVITY;
+		nx = 1;
+		SetState(MARIO_STATE_WALKING_RIGHT);
+	}
+}
 
 void CMario::HandleTurning() {
 
