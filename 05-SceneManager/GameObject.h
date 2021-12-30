@@ -49,8 +49,8 @@ public:
 public:
 	int tag = 0;
 	int type = 0;
-	float z = 0; // For render coin in brick and other items or enemies inside Brick and Pipe
-
+	int z = 0; // For render coin in brick and other items or enemies inside Brick and Pipe
+	 
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float& x, float& y) { x = this->x; y = this->y; }
 	void GetSpeed(float& vx, float& vy) { vx = this->vx; vy = this->vy; }

@@ -40,7 +40,7 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 	}
 
 	float mLeft, mTop, mRight, mBottom;
-	float oLeft, oTop, oRight, oBottom;
+	//float oLeft, oTop, oRight, oBottom;
 	if (mario != NULL) {
 		if (mario->isTuring && mario->GetLevel() == MARIO_LEVEL_TAIL) {
 			mario->tail->GetBoundingBox(mLeft, mTop, mRight, mBottom);
@@ -64,15 +64,15 @@ void CKoopas::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 			vy += KOOPAS_GRAVITY * dt;
 	}
 
-	if (!mario->isHolding && isBeingHeld)
-	{
-		isBeingHeld = false;
-		if ((state == KOOPAS_STATE_IN_SHELL || state == KOOPAS_STATE_SHELL_UP) && !isBeingHeld)
-		{
-			nx = mario->nx;
-			SetState(KOOPAS_STATE_SPINNING);
-		}
-	}
+	//if (!mario->isHolding && isBeingHeld)
+	//{
+	//	isBeingHeld = false;
+	//	if ((state == KOOPAS_STATE_IN_SHELL || state == KOOPAS_STATE_SHELL_UP) && !isBeingHeld)
+	//	{
+	//		nx = mario->nx;
+	//		SetState(KOOPAS_STATE_SPINNING);
+	//	}
+	//}
 	if (isBeingHeld)
 	{
 		y = mario->getY() - 3; //TODO change const number

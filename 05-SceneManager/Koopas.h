@@ -49,12 +49,12 @@
 
 class CKoopas : public CGameObject
 {
-	DWORD reviving_start = 0;
-	DWORD shell_start = 0;
-	DWORD dying_start = 0;
+	ULONGLONG reviving_start = 0;
+	ULONGLONG shell_start = 0;
+	ULONGLONG dying_start = 0;
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
-	DWORD dt;
+	ULONGLONG dt;
 public:
 
 	bool isBeingHeld = false;

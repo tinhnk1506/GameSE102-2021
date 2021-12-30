@@ -25,7 +25,7 @@ class CLeaf :
 	public CGameObject
 {
 	float start_y;
-	DWORD start_timing;
+	ULONGLONG start_timing;
 public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();

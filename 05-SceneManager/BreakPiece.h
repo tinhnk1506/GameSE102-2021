@@ -15,7 +15,7 @@ class BreakPiece :
 {
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	virtual void Render();
-	DWORD start_exist = 0;
+	ULONGLONG start_exist = 0;
 public:
 	BreakPiece(float nx, float ny) { this->vx = nx * PIECE_SPEED; this->vy = ny * PIECE_SPEED; StartExisted(); };
 	virtual void GetBoundingBox(float& l, float& t, float& r, float& b);

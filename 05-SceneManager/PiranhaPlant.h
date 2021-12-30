@@ -23,8 +23,8 @@
 class PiranhaPlant :
 	public CGameObject
 {
-	DWORD biting_start = 0;
-	DWORD dying_start = 0;
+	ULONGLONG biting_start = 0;
+	ULONGLONG dying_start = 0;
 	float limitY = 0;
 
 public:

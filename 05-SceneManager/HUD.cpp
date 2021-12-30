@@ -201,7 +201,7 @@ void HUD::AddCard() {
 		cards.clear();
 		if (mario != NULL) {
 			if (mario->cards.size() > 0) {
-				for (int i = 0; i < mario->cards.size(); i++) {
+				for (unsigned int i = 0; i < mario->cards.size(); i++) {
 					int index = mario->cards[i];
 					cards.push_back(index);
 					if (startTakingCard == 0) {

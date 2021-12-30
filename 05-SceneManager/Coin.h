@@ -24,9 +24,9 @@
 #define COIN_SPEED 0.2f
 
 class CCoin : public CGameObject {
-	DWORD timing_start = 0;
-	DWORD exist_start = 0;
-	bool isAppear;
+	ULONGLONG timing_start = 0;
+	ULONGLONG exist_start = 0;
+	bool isAppear = false;
 	//int coinPoint = 0;
 
 public:

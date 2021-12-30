@@ -67,8 +67,6 @@
 
 #define MARIO_GRAVITY			0.002f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.4f
-
 //state
 #define MARIO_STATE_DIE				-10
 #define MARIO_STATE_IDLE			0
@@ -334,25 +332,25 @@ class CMario : public CGameObject
 
 	bool isRunning = false;
 	bool isReadyToRun = false;
-	int runningStack;
-	int direction;
+	int runningStack = 0;
+	int direction = 1;
 	int stackScoreTimes = 0;
 
-	ULONGLONG untouchable_start;
+	ULONGLONG untouchable_start = 0;
 
-	ULONGLONG marioDt;
-	ULONGLONG fly_start;
-	ULONGLONG start_transform;
-	ULONGLONG start_turning_state;
-	ULONGLONG start_turning;
-	ULONGLONG tail_fly_start;
-	ULONGLONG start_kicking;
-	ULONGLONG start_speed_stack;
-	ULONGLONG start_running;
-	ULONGLONG running_stop;
-	ULONGLONG pipeUpTimer;
-	ULONGLONG pipeDownTimer;
-	ULONGLONG start_score_time;
+	ULONGLONG marioDt = 0;
+	ULONGLONG fly_start = 0;
+	ULONGLONG start_transform = 0;
+	ULONGLONG start_turning_state = 0;
+	ULONGLONG start_turning = 0;
+	ULONGLONG tail_fly_start = 0;
+	ULONGLONG start_kicking = 0;
+	ULONGLONG start_speed_stack = 0;
+	ULONGLONG start_running = 0;
+	ULONGLONG running_stop = 0;
+	ULONGLONG pipeUpTimer = 0;
+	ULONGLONG pipeDownTimer = 0;
+	ULONGLONG start_score_time = 0;
 
 	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
@@ -369,7 +367,7 @@ class CMario : public CGameObject
 	int GetAniIdSmall();
 	int GetAniIdTail();
 
-	BOOLEAN isJumping;
+	BOOLEAN isJumping = false;
 
 public:
 	// hud
@@ -384,10 +382,10 @@ public:
 	float ax;				// acceleration on x 
 
 	BOOLEAN isStackingScore = false;
-	BOOLEAN isOnPlatform;
-	BOOLEAN isHolding;
-	BOOLEAN isReadyToHold;
-	BOOLEAN isKick;
+	BOOLEAN isOnPlatform = false;
+	BOOLEAN isHolding = false;
+	BOOLEAN isReadyToHold = false;
+	BOOLEAN isKick = false;
 	BOOLEAN isChangeDirection = false;
 	BOOLEAN isBangAni = false;
 	BOOLEAN isTransforming = false;
@@ -395,7 +393,7 @@ public:
 	BOOLEAN isChangingY = false;
 	BOOLEAN isAttacked = false;
 	BOOLEAN isFlying = false;
-	BOOLEAN isSitting;
+	BOOLEAN isSitting = false;
 	BOOLEAN isFlapping = false;
 	BOOLEAN isPipeUp = false;
 	BOOLEAN isPipeDown = false;
@@ -410,7 +408,7 @@ public:
 	BOOLEAN isTuring = false;
 	int turningStack = 0;
 
-	CTail* tail;
+	CTail* tail = NULL;
 
 	//CARD
 	vector<int> cards;
@@ -429,7 +427,7 @@ public:
 		ay = MARIO_GRAVITY;
 
 		level = MARIO_LEVEL_SMALL;
-		//level = level = MARIO_LEVEL_TAIL;
+		//level = MARIO_LEVEL_TAIL;
 		untouchable = 0;
 		untouchable_start = -1;
 		isOnPlatform = false;

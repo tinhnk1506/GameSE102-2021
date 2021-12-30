@@ -74,9 +74,9 @@ void PiranhaPlantFire::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 	CMario* mario = ((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
 	if (mario != NULL) {
 		float mLeft, mTop, mRight, mBottom;
-		float oLeft, oTop, oRight, oBottom;
+		//float oLeft, oTop, oRight, oBottom;
 
-		int mWidth = mario->GetWidth();
+		float mWidth = mario->GetWidth();
 		/*if ((floor(mario->x) + (float)mWidth + PIRANHAPLANT_ACTIVE_RANGE <= x
 			|| ceil(mario->x) >= x + PIRANHAPLANT_BBOX_WIDTH + PIRANHAPLANT_ACTIVE_RANGE)
 			&& state == PIRANHAPLANT_STATE_INACTIVE && delay_start == 0)

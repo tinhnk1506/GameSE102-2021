@@ -83,7 +83,7 @@ class HUD :public CGameObject {
 	int type_hud;
 
 	bool isTakingCard = false;
-	DWORD startTakingCard = 0;
+	ULONGLONG startTakingCard = 0;
 public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);
 	HUD(int type_hud = 0);

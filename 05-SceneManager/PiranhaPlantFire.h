@@ -21,7 +21,7 @@
 #define PIRANHAPLANT_ANI_RIGHT_DOWN			1
 #define PIRANHAPLANT_ANI_LEFT_UP			2
 #define PIRANHAPLANT_ANI_LEFT_DOWN			3
-#define PIRANHAPLANT_ANI_DEATH				4
+//#define PIRANHAPLANT_ANI_DEATH				4
 
 #define PIRANHAPLANT_DELAY_TIME			750
 #define PIRANHAPLANT_AIM_TIME			750
@@ -34,10 +34,10 @@
 class PiranhaPlantFire :
 	public PiranhaPlant
 {
-	DWORD shooting_start = 0;
-	DWORD aim_start = 0;
-	DWORD delay_start = 0;
-	DWORD dying_start = 0;
+	ULONGLONG shooting_start = 0;
+	ULONGLONG aim_start = 0;
+	ULONGLONG delay_start = 0;
+	ULONGLONG dying_start = 0;
 	float limitY = 0;
 	bool Up = false;
 	bool Right = false;

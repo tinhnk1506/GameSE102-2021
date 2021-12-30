@@ -8,11 +8,11 @@
 
 class CTail :public CGameObject
 {
-	DWORD hit_start = 0;
+	ULONGLONG hit_start = 0;
 
-	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	/*void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopas(LPCOLLISIONEVENT e);
-	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);
+	void OnCollisionWithPiranhaPlant(LPCOLLISIONEVENT e);*/
 
 public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL);

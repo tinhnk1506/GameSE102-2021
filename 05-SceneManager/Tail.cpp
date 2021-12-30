@@ -37,7 +37,7 @@ void CTail::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 			else x = mario->x + MARIO_BIG_BBOX_WIDTH;
 		}
 		//x = mario->x - TAIL_BBOX_WIDTH;
-		float mLeft, mTop, mRight, mBottom;
+		//float mLeft, mTop, mRight, mBottom;
 		y = mario->y + TAIL_BBOX_WIDTH * 2 + 1;
 		//y = mario->y;
 	}
