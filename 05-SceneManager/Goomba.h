@@ -71,15 +71,15 @@
 class CGoomba : public CGameObject
 {
 protected:
-	float ax;				
-	float ay; 
+	float ax;
+	float ay;
 	int jumpingStacks = 0;
 
-	ULONGLONG chasingTimer;
-	ULONGLONG die_start;
-	ULONGLONG walkingTimer;
-	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-	virtual void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
+	ULONGLONG chasingTimer = -1;
+	ULONGLONG die_start = -1;
+	ULONGLONG walkingTimer = -1;
+	virtual void GetBoundingBox(float& left, float& top, float& right, float& bottom);
+	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	virtual void Render();
 
 	virtual int IsCollidable() { return 1; };
@@ -88,7 +88,7 @@ protected:
 
 	virtual void OnCollisionWith(LPCOLLISIONEVENT e);
 
-public: 	
+public:
 	CGoomba(int tag);
 	virtual void SetState(int state);
 };

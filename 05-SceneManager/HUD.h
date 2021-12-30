@@ -80,7 +80,7 @@ class HUD :public CGameObject {
 	int remainTime = DEFAULT_TIME;
 	int speedStack = 0;
 
-	int type_hud;
+	int type_hud = 0;
 
 	bool isTakingCard = false;
 	ULONGLONG startTakingCard = 0;
