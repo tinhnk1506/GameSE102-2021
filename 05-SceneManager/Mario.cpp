@@ -36,6 +36,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 	HandleChangeDirection();
 	HandleSpeedStack();
 	HandleSwitchMap();
+	HandleFinishScene();
 
 	if (GetTickCount64() - start_score_time >= STACK_SCORE_TIME && isStackingScore) {
 		isStackingScore = false;
@@ -116,7 +117,7 @@ void CMario::OnCollisionWithPCardItem(LPCOLLISIONEVENT e) {
 		card->SetAppear(false);
 		card->isDeleted = true;
 		AddCard(card->state - 1);
-		//isFinish = true;
+		isFinish = true;
 	}
 }
 
@@ -1089,6 +1090,14 @@ void CMario::AddScore(float x, float y, int score, bool isStack) {
 
 }
 
+void CMario::HandleFinishScene() {
+	if (isFinish) {
+		ax = MARIO_ACCELERATION;
+		ay = MARIO_GRAVITY;
+		nx = 1;
+		SetState(MARIO_STATE_WALKING_RIGHT);
+	}
+}
 
 void CMario::HandleTurning() {
 

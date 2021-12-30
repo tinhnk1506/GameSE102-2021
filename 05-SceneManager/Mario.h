@@ -370,6 +370,8 @@ class CMario : public CGameObject
 	BOOLEAN isJumping = false;
 
 public:
+
+	bool isFinish = false;
 	// hud
 	int marioScore = 0;
 	int coin = 0;
@@ -463,6 +465,7 @@ public:
 	void HandleChangeDirection();
 	void HandleSpeedStack();
 	void HandleSwitchMap();
+	void HandleFinishScene();
 	//END HANDLE
 
 	void SetLevel(int l);
