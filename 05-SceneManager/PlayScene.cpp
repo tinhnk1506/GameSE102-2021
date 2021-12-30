@@ -416,7 +416,7 @@ void CPlayScene::Update(DWORD dt)
 	float cx, cy;
 
 	player->GetPosition(cx, cy);
-	SetCam(cx, cy + CAMERA, dt);
+	SetCam(cx, cy, dt);
 	hud->Update(dt, &coObjects);
 
 	PurgeDeletedObjects();

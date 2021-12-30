@@ -1,5 +1,6 @@
 #include "MushRoom.h"
 #include "PlayScene.h"
+#include "Block.h"
 
 CMushRoom::CMushRoom(int type) {
 	SetAppear(false);
@@ -46,8 +47,11 @@ void CMushRoom::OnNoCollision(DWORD dt) {
 
 void CMushRoom::OnCollisionWith(LPCOLLISIONEVENT e)
 {
+
+	CBlock* block = dynamic_cast<CBlock*>(e->obj);
+
 	if (state == MUSHROOM_STATE_RIGHT) {
-		if (e->ny != 0 && e->obj->IsBlocking())
+		if (e->ny != 0 && e->obj->IsBlocking() || block)
 		{
 			vy = 0;
 		}

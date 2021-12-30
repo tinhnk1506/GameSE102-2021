@@ -239,9 +239,12 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 {
-	e->obj->Delete();
+	CMushRoom* mushRoom = dynamic_cast<CMushRoom*>(e->obj);
+	mushRoom->Delete();
 	AddScore(this->x, this->y, 100);
-	StartTransform(MARIO_LEVEL_BIG);
+
+	if (mushRoom->GetTypeMushRoom() != MUSHROOM_GREEN)
+		StartTransform(MARIO_LEVEL_BIG);
 }
 
 void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)

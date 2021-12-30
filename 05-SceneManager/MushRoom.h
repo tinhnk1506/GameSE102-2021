@@ -36,6 +36,7 @@ public:
 		isAppear = appear;
 	}
 	bool GetAppear() { return isAppear; }
+	int GetTypeMushRoom() { return typeMushRoom; }
 
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 
