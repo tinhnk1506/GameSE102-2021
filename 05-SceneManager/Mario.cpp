@@ -102,8 +102,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithLeaf(e);
 	else if (dynamic_cast<FireBullet*>(e->obj))
 		OnCollisionWithFireBullet(e);
-	//else if (dynamic_cast<PiranhaPlant*>(e->obj))
-	//	HandleBasicMarioDie();
+	else if (dynamic_cast<PiranhaPlant*>(e->obj))
+		HandleBasicMarioDie();
 	else if (dynamic_cast<Switch*>(e->obj))
 		OnCollisionWithPSwitch(e);
 	else if (dynamic_cast<CardItem*>(e->obj))
@@ -239,6 +239,7 @@ void CMario::OnCollisionWithKoopas(LPCOLLISIONEVENT e) {
 void CMario::OnCollisionWithMushRoom(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
+	AddScore(this->x, this->y, 100);
 	StartTransform(MARIO_LEVEL_BIG);
 }
 
@@ -961,11 +962,12 @@ void CMario::HandleMarioJump() {
 
 void CMario::HandleBasicMarioDie() {
 
-	if (level > MARIO_LEVEL_SMALL)
+	if (level != MARIO_LEVEL_SMALL)
 	{
-		level = MARIO_LEVEL_SMALL;
+		level -= 1;
+		StartTransform(level);
 		StartUntouchable();
-		DebugOut(L">>> Mario SMALL >>>%f \n", level);
+		DebugOut(L">>> Mario TRANSFORM >>>%d \n", level);
 	}
 	else
 	{

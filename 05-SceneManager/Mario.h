@@ -336,7 +336,7 @@ class CMario : public CGameObject
 	int direction = 1;
 	int stackScoreTimes = 0;
 
-	ULONGLONG untouchable_start = 0;
+	ULONGLONG untouchable_start = -1;
 
 	ULONGLONG marioDt = 0;
 	ULONGLONG fly_start = 0;
@@ -352,7 +352,7 @@ class CMario : public CGameObject
 	ULONGLONG pipeDownTimer = 0;
 	ULONGLONG start_score_time = 0;
 
-	void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
+	//void OnCollisionWithBlock(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);

@@ -29,11 +29,17 @@ void CSampleKeyHandler::OnKeyDown(int KeyCode)
 		}
 		break;
 	case DIK_1:
-		mario->SetLevel(MARIO_LEVEL_SMALL);
+		mario->StartTransform(MARIO_LEVEL_SMALL);
 		break;
 	case DIK_2:
-		mario->SetLevel(MARIO_LEVEL_BIG);
+		mario->StartTransform(MARIO_LEVEL_BIG);
 		break;
+	case DIK_3:
+		mario->StartTransform(MARIO_LEVEL_TAIL);
+		break;
+		//case DIK_4:
+		//	mario->SetLevel(MARIO_LEVEL_FIRE);
+		//	break;
 	case DIK_0:
 		mario->SetState(MARIO_STATE_DIE);
 		break;
