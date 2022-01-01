@@ -65,7 +65,7 @@ void Switch::ChangeBrickToCoin() {
 	{
 		if (dynamic_cast<BreakableBrick*>(objects.at(i)) && !objects.at(i)->isDeleted) {
 			BreakableBrick* bBrick = dynamic_cast<BreakableBrick*>(objects.at(i));
-			CCoin* coin = new CCoin();
+			CCoin* coin = new CCoin(COIN_TYPE_TRANSFORM);
 			coin->SetPosition(bBrick->x, bBrick->y);
 			coin->SetAppear(true);
 			coin->SetAnimationSet(ani_set);

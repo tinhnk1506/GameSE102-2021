@@ -56,4 +56,6 @@ public:
 
 	int IsBlocking() { return 0; }
 	int IsBlocking(bool isBlocking) { return isBlocking; }
+
+	void ChangeCoinToBrick();
 };

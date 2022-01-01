@@ -10,6 +10,10 @@ class BreakableBrick :
 {
 public:
 	BreakableBrick(float x, float y, int type, int item, int totalItems) :CBrick(x, y, type, item, totalItems) {}
+	BreakableBrick(float x, float y) {
+		this->x = x;
+		this->y = y;
+	}
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* colliable_objects = NULL);
 	virtual void Render();
 	void Break();

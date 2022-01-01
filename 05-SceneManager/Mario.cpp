@@ -328,11 +328,17 @@ int CMario::GetAniIdSmall()
 					if (isKick) {
 						aniId = MARIO_ANI_SMALL_KICKING_RIGHT;
 					}
+					if (isHolding) {
+						aniId = MARIO_ANI_SMALL_HOLD_IDLE_RIGHT;
+					}
 				}
 				else {
 					aniId = MARIO_ANI_SMALL_IDLE_LEFT;
 					if (isKick) {
 						aniId = MARIO_ANI_SMALL_KICKING_LEFT;
+					}
+					if (isHolding) {
+						aniId = MARIO_ANI_SMALL_HOLD_IDLE_LEFT;
 					}
 				}
 			}
@@ -972,7 +978,7 @@ void CMario::HandleBasicMarioDie() {
 		StartUntouchable();
 		DebugOut(L">>> Mario TRANSFORM >>>%d \n", level);
 	}
-	else
+	else if (untouchable != 1)
 	{
 		DebugOut(L">>> Mario DIE >>> \n");
 		SetState(MARIO_STATE_DIE);

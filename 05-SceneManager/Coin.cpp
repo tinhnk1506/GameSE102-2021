@@ -1,6 +1,8 @@
 #include "Coin.h"
 #include "PlayScene.h"
 #include "Mario.h"
+#include "BreakableBrick.h"
+#include "debug.h"
 
 void CCoin::Render()
 {
@@ -18,8 +20,11 @@ CCoin::CCoin(int tag) : CGameObject() {
 		isAppear = false;
 	else
 		isAppear = true;
-	if (tag == COIN_TYPE_TRANSFORM)
+	if (tag == COIN_TYPE_TRANSFORM) {
 		StartExist();
+		this->tag = tag;
+	}
+		
 	state = COIN_STATE_IDLE;
 }
 
@@ -36,7 +41,7 @@ void CCoin::OnNoCollision(DWORD dt) {
 }
 
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
-	
+
 
 	if (isDeleted)
 		return;
@@ -45,6 +50,11 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects) {
 
 	CPlayScene* currentScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	CMario* mario = currentScene->GetPlayer();
+
+	if (GetTickCount64() - exist_start > COIN_EXIST_TIME && this->tag == COIN_TYPE_TRANSFORM) {
+		DebugOut(L"IN HERE WITH TAG 60");
+		ChangeCoinToBrick();
+	}
 
 	if (state == COIN_STATE_UP)
 	{
@@ -81,5 +91,28 @@ void CCoin::SetState(int state) {
 	case COIN_STATE_DOWN:
 		vy = COIN_SPEED;
 		break;
+	}
+}
+
+void CCoin::ChangeCoinToBrick() {
+	CPlayScene* currentScene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	vector<LPGAMEOBJECT> objects = currentScene->GetObjects();
+	CAnimationSets* animation_sets = CAnimationSets::GetInstance();
+	LPANIMATION_SET ani_set = animation_sets->Get(BREAKABLEBRICK_ANI_SET_ID);
+	for (size_t i = 0; i < objects.size(); i++)
+	{
+		if (dynamic_cast<CCoin*>(objects.at(i)) && !objects.at(i)->isDeleted) {
+			CCoin* coin = dynamic_cast<CCoin*>(objects.at(i));
+			if (coin->tag == COIN_TYPE_TRANSFORM) {
+				DebugOut(L"coin->tag::%d\n", coin->tag);
+				BreakableBrick* brick = new BreakableBrick(coin->x, coin->y);
+				brick->SetAnimationSet(ani_set);
+				currentScene->AddObject(brick);
+				coin->isDeleted = true;
+			}
+			//CCoin* coin = new CCoin(COIN_TYPE_TRANSFORM);
+			//coin->SetPosition(bBrick->x, bBrick->y);
+			//coin->SetAppear(true);
+		}
 	}
 }
